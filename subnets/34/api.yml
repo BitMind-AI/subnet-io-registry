@@ -1,0 +1,43 @@
+baseUrl: "https://subnet-api.bitmindlabs.ai"
+endpoints:
+  - path: /detect-image
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "Bearer {{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        image:
+          type: string
+          description: >
+            URL or Base64 encoded image.
+            - For URLs: The image must be publicly accessible.
+            - For Base64: The max size is 4MB. Supported MIME types: image/gif, image/jpeg, image/png, image/bmp, image/tiff.
+      required: [image]
+    responseSchema:
+      type: object
+      properties:
+        isAI:
+          type: boolean
+          description: Indicates if the content is predicted to be AI-generated.
+        confidence:
+          type: number
+          format: float
+          description: Confidence score of the inference result.
+        predictions:
+          type: array
+          items:
+            type: number
+            format: float
+          description: List of prediction scores.
+        similarity:
+          type: number
+          format: float
+          description: Similarity to known AI-generated content.
+        fqdn:
+          type: string
+          description: Fully qualified domain name of the validator that generated the inference result.

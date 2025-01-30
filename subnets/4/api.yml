@@ -2,6 +2,12 @@ baseUrl: "https://api.corcel.io/v1/sn4"
 endpoints:
   - path: /chat/completions
     method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
     requestSchema:
       type: object
       properties:
