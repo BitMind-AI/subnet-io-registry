@@ -1,0 +1,170 @@
+baseUrl: "https://api.corcel.io/v1"
+endpoints:
+  - path: /chat/completions
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        model:
+          type: string
+          default: cortext-ultra
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum: [ user, assistant, system ]
+              content:
+                type: string
+            required: [ role, content ]
+        temperature:
+          type: number
+          default: 0.0001
+        max_tokens:
+          type: integer
+          default: 4096
+      required: [ model, messages ]
+
+  - path: /text/cortext/chat
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        model:
+          type: string
+          default: cortext-ultra
+        stream:
+          type: boolean
+          default: false
+        top_p:
+          type: number
+          default: 1
+        temperature:
+          type: number
+          default: 0.0001
+        max_tokens:
+          type: integer
+          default: 4096
+      required: [ model ]
+
+  - path: /text/vision/chat
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        model:
+          type: string
+          default: cortext-ultra
+        stream:
+          type: boolean
+          default: false
+        temperature:
+          type: number
+          default: 0.0001
+        max_tokens:
+          type: integer
+          default: 4096
+      required: [ model ]
+
+  - path: /image/cortext/text-to-image
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        prompt:
+          type: string
+        n:
+          type: integer
+          default: 1
+        size:
+          type: string
+          enum: [ "256x256", "512x512", "1024x1024" ]
+          default: "1024x1024"
+      required: [ prompt ]
+
+  - path: /image/vision/text-to-image
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        prompt:
+          type: string
+        n:
+          type: integer
+          default: 1
+        size:
+          type: string
+          enum: [ "256x256", "512x512", "1024x1024" ]
+          default: "1024x1024"
+      required: [ prompt ]
+
+  - path: /image/vision/image-to-image
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        image_url:
+          type: string
+        prompt:
+          type: string
+        n:
+          type: integer
+          default: 1
+        size:
+          type: string
+          enum: [ "256x256", "512x512", "1024x1024" ]
+          default: "1024x1024"
+      required: [ image_url, prompt ]
+
+  - path: /image/vision/avatar
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        image_url:
+          type: string
+      required: [ image_url ]
