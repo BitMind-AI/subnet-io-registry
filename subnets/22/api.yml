@@ -1,10 +1,10 @@
-baseUrl: "https://api.nichetensor.com/api/v1/sn22"
+baseUrl: "https://api.corcel.io/api/v1/sn22"
 endpoints:
   - path: /search
     method: POST
     auth:
       type: header
-      key: "API_KEY"
+      key: "Authorization"
       value: "{{api-key}}"
     headers:
       Content-Type: application/json
