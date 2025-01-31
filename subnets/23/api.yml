@@ -1,0 +1,47 @@
+baseUrl: "https://api.nichetensor.com/api/v1"
+endpoints:
+  - path: /txt2img
+    method: POST
+    auth:
+      type: header
+      key: "API_KEY"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: "The textual prompt used to generate the image"
+        model_name:
+          type: string
+          description: "The name of the model to use for image generation"
+          enum: [ "AnimeV3", "DreamShaperXL", "JuggernautXL", "RealitiesEdgeXL", "StickerMaker" ]
+        seed:
+          type: integer
+          description: "The seed value for the random number generator. Use 0 for a random seed"
+          default: 0
+        aspect_ratio:
+          type: string
+          description: "Ratio of image to generate"
+          enum: [ "1:1", "2:3", "3:2", "16:9", "9:16", "13:19", "19:13" ]
+          default: "1:1"
+        negative_prompt:
+          type: string
+          description: "List of things to avoid in the generation"
+          default: ""
+        advanced_params:
+          type: object
+          description: "Advanced parameters such as number of steps and guidance scale"
+          properties:
+            num_inference_steps:
+              type: integer
+              description: "Number of inference steps"
+              default: 20
+            use_expansion:
+              type: boolean
+              description: "Use prompt expansion for more aesthetic output"
+              enum: [ true, false ]
+              default: false
+      required: [ prompt, model_name ]
