@@ -1,6 +1,6 @@
 baseUrl: "https://api.corcel.io/v1/sn32"
 endpoints:
-  - path: /llm_detect
+  - path: /text
     method: POST
     auth:
       type: header
@@ -14,8 +14,7 @@ endpoints:
         text:
           type: string
           description: The text to be analyzed for AI-generated content.
-        model:
-          type: string
-          default: "detective-v1"
-          description: The model used for detection.
+        deepscan: 
+          type: boolean
+          default: false
       required: [ text ]
