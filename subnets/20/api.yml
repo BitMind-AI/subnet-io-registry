@@ -1,4 +1,4 @@
-baseUrl: "https://api.corcel.io/api/v1/sn20"
+baseUrl: "https://api.corcel.io/v1/sn20"
 endpoints:
   - path: /qna_task
     method: POST

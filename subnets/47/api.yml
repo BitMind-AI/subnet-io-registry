@@ -1,4 +1,4 @@
-baseUrl: "https://api.corcel.io/api/v1/condense"
+baseUrl: "https://api.corcel.io/v1/condense"
 endpoints:
   - path: /organic
     method: POST

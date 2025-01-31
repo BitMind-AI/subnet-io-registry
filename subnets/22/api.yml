@@ -1,4 +1,4 @@
-baseUrl: "https://api.corcel.io/api/v1/sn22"
+baseUrl: "https://api.corcel.io/v1/sn22"
 endpoints:
   - path: /search
     method: POST
