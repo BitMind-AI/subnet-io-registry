@@ -1,0 +1,38 @@
+baseUrl: "https://api.nichetensor.com/api/v1/sn22"
+endpoints:
+  - path: /search
+    method: POST
+    auth:
+      type: header
+      key: "API_KEY"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: "Search query text to run tools with"
+        tools:
+          type: array
+          description: "List of search tools to use for fetching data"
+          items:
+            type: string
+            enum: [ "Twitter Search", "Google Search", "Google News Search", "Google Image Search", "Bing Search", "ArXiv Search", "Wikipedia Search", "Youtube Search", "Hacker News Search", "Reddit Search" ]
+        model:
+          type: string
+          description: "Model to use for scraping"
+          enum: [ "NOVA", "ORBIT", "HORIZON" ]
+          default: "NOVA"
+        response_order:
+          type: string
+          description: "Order of results presentation"
+          enum: [ "LINKS_FIRST", "SUMMARY_FIRST" ]
+          default: "LINKS_FIRST"
+        date_filter:
+          type: string
+          description: "Time range filter for results"
+          enum: [ "PAST_24_HOURS", "PAST_2_DAYS", "PAST_WEEK", "PAST_2_WEEKS", "PAST_MONTH", "PAST_2_MONTHS", "PAST_YEAR", "PAST_2_YEARS" ]
+          default: "PAST_WEEK"
+      required: [ prompt, tools ]
