@@ -1,0 +1,46 @@
+baseUrl: "https://api.corcel.io/api/v1/condense"
+endpoints:
+  - path: /organic
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        messages:
+          type: array
+          description: "List of messages where each message has a 'role' and 'content' key"
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum: [ "user", "assistant", "system" ]
+                description: "Role of the message sender"
+              content:
+                type: string
+                description: "Content of the message"
+            required: [ role, content ]
+        tier:
+          type: string
+          description: "Inference tier"
+          enum: [ "inference_0", "inference_1", "research" ]
+          default: "research"
+        target_model:
+          type: string
+          description: "Model to use for condensing text"
+          enum: [ "mistralai/Mistral-7B-Instruct-v0.2" ]
+          default: "mistralai/Mistral-7B-Instruct-v0.2"
+        miner_uid:
+          type: integer
+          description: "Miner UID"
+          default: -1
+        top_incentive:
+          type: number
+          description: "Top incentive value"
+          default: 0.9
+      required: [ messages ]
