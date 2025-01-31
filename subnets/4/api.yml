@@ -13,7 +13,7 @@ endpoints:
       properties:
         model:
           type: string
-          default: cortext-ultra
+          default: nvidia/Llama-3.1-Nemotron-70B-Instruct-HF
         messages:
           type: array
           items:
@@ -27,8 +27,14 @@ endpoints:
             required: [ role, content ]
         temperature:
           type: number
-          default: 0.0001
+          default: 0.1
         max_tokens:
           type: integer
-          default: 4096
+          default: 500
+        stream:
+          type: boolean
+          default: true
+        logprobs:
+          type: boolean
+          default: false
       required: [ model, messages ]

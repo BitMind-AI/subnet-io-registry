@@ -31,4 +31,10 @@ endpoints:
         max_tokens:
           type: integer
           default: 500
-      required: [ messages ]
+        stream:
+          type: boolean
+          default: true
+        logprobs:
+          type: boolean
+          default: false
+      required: [ model, messages ]

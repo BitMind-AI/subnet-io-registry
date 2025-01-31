@@ -11,19 +11,20 @@ endpoints:
     requestSchema:
       type: object
       properties:
-        prompt:
-          type: string
-          description: "User query or task description"
-        urls:
+        messages:
           type: array
-          description: "List of URLs for data context (can be empty or contain wildcards)"
-          items:
-            type: string
-        datas:
-          type: array
-          description: "List of data objects with source and context"
+          description: "Chat message history"
           items:
             type: object
+            properties:
+              role:
+                type: string
+                enum: [ "user", "assistant", "system" ]
+                description: "Role of the message sender"
+              content:
+                type: string
+                description: "Message content"
+            required: [ role, content ]
         tools:
           type: array
           description: "List of tools to be used for query processing"
@@ -39,39 +40,31 @@ endpoints:
               arguments:
                 type: object
                 description: "Tool arguments schema"
-        notes:
-          type: string
-          description: "Additional notes related to the query"
-          default: "No Notes"
-        messages:
-          type: array
-          description: "Chat message history"
-          items:
-            type: object
-            properties:
-              role:
-                type: string
-                enum: [ "user", "assistant", "system" ]
-                description: "Role of the message sender"
-              content:
-                type: string
-                description: "Message content"
-            required: [ role, content ]
-        files:
-          type: array
-          description: "List of uploaded files for query processing"
-          items:
-            type: object
-        response:
-          type: object
-          description: "Expected response format"
-          default: {}
-        timeout:
-          type: number
-          description: "Time in seconds to wait for the response"
-        miner_uids:
-          type: array
-          description: "List of miner UIDs to process the task"
-          items:
-            type: integer
-      required: [ prompt ]
+                properties:
+                  bill_amount:
+                    type: object
+                    properties:
+                      required:
+                        type: boolean
+                        description: "Whether this argument is required"
+                      type:
+                        type: string
+                        enum: [ "number" ]
+                        description: "Data type of the argument"
+                      description:
+                        type: string
+                        description: "Description of the argument"
+                  tip_percent:
+                    type: object
+                    properties:
+                      required:
+                        type: boolean
+                        description: "Whether this argument is required"
+                      type:
+                        type: string
+                        enum: [ "number" ]
+                        description: "Data type of the argument"
+                      description:
+                        type: string
+                        description: "Description of the argument"
+      required: [ messages, tools ]
