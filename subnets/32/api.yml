@@ -1,4 +1,4 @@
-baseUrl: "https://api.corcel.io/v1/sn32"
+baseUrl: "https://api.its-ai.org/api"
 endpoints:
   - path: /text
     method: POST
@@ -18,3 +18,24 @@ endpoints:
           type: boolean
           default: false
       required: [ text ]
+
+  - path: /batch
+    method: POST
+    auth:
+      type: body
+      key: "api_key"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        texts:
+          type: array
+          items:
+            type: string
+          description: An array of texts to be analyzed for AI-generated content.
+        deep_scan: 
+          type: boolean
+          default: false
+      required: [ texts ]
