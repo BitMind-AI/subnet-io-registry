@@ -25,9 +25,6 @@ endpoints:
               content:
                 type: string
             required: [ role, content ]
-        temperature:
-          type: number
-          default: 0.1
         max_tokens:
           type: integer
           default: 500
