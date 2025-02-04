@@ -3,9 +3,9 @@ endpoints:
   - path: /text
     method: POST
     auth:
-      type: header
-      key: "Authorization"
-      value: "Token {{api-key}}"
+      type: body
+      key: "api_key"
+      value: "{{api-key}}"
     headers:
       Content-Type: application/json
     requestSchema:
@@ -14,7 +14,7 @@ endpoints:
         text:
           type: string
           description: The text to be analyzed for AI-generated content.
-        deepscan: 
+        deep_scan: 
           type: boolean
           default: false
       required: [ text ]
