@@ -1,0 +1,47 @@
+# General OS-related files
+.DS_Store
+Thumbs.db
+
+# Python-related
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+build/
+sdist/
+.venv/
+venv/
+env/
+
+# Node.js/npm-related (if using Redocly CLI)
+node_modules/
+package-lock.json
+npm-debug.log
+yarn-error.log
+
+# Docker-related
+# If you're building Docker images, you might want to exclude built images
+# from being accidentally committed. Adjust paths as needed.
+# e.g., if you build an image tag that creates a local file
+# my-redoc-image.tar  # Example: a Docker image saved to a file
+
+# OpenAPI-related
+openapi.json
+openapi.yaml
+
+# Redocly CLI-related (if applicable)
+.redocly/  # Cache and temp files
+
+# IDE-specific (Visual Studio Code)
+.vscode/
+*.code-workspace
+
+# Miscellaneous
+*.log
+tmp/
+temp/
+*~
+*.swp  # Vim swap files
+*.bak
+
+#If you are using any secrets, add secret related variable
