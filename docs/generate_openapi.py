@@ -2,7 +2,7 @@ import yaml
 import os
 import json
 
-def generate_openapi(base_url, api_definitions_path, output_file):
+def generate_openapi(api_definitions_path, output_file):
     """Generates an OpenAPI specification with subnet ID in paths, 
        fixed Bearer auth, ordered by subnet ID, and includes default values."""
 
@@ -13,7 +13,7 @@ def generate_openapi(base_url, api_definitions_path, output_file):
             "version": "v1",
             "description": "Bitmind Oracle API Documentation.",
         },
-        "servers": [{"url": base_url}, {"url": "http://localhost:3000/prod/api"}],
+        "servers": [{"url": "https://unified-api.bitmind.ai/api"}, {"url": "http://localhost:3000/prod/api"}],  # Moved base URLs here
         "paths": {},
         "components": {
             "securitySchemes": {
@@ -24,7 +24,8 @@ def generate_openapi(base_url, api_definitions_path, output_file):
                     "description": "API Key in Bearer format"
                 }
             }
-        }
+        },
+        "security": [{"bearerAuth": []}]  # Added global security
     }
 
     # Helper function to add defaults to schema properties
@@ -34,7 +35,15 @@ def generate_openapi(base_url, api_definitions_path, output_file):
                 if "default" in prop_details:
                     continue  # Skip if already has a default
                 if "properties" in prop_details:
-                   add_defaults_to_schema(prop_details)
+                    add_defaults_to_schema(prop_details)
+
+                # Example of adding default to string if no example provided
+                if prop_details.get('type') == 'string' and 'example' not in prop_details and 'default' not in prop_details:
+                    prop_details['default'] = '' # or some other appropriate default
+                if prop_details.get('type') == 'integer' and 'example' not in prop_details and 'default' not in prop_details:
+                    prop_details['default'] = 0
+                if prop_details.get('type') == 'boolean' and 'example' not in prop_details and 'default' not in prop_details:
+                    prop_details['default'] = False
 
         return schema
 
@@ -57,8 +66,10 @@ def generate_openapi(base_url, api_definitions_path, output_file):
                             for endpoint in data["endpoints"]:
                                 path = f"/{subnet_id}{endpoint['path']}"  # Prepend subnetId to path
                                 method = endpoint["method"].lower()
-
+                                summary = endpoint.get("summary", f"{method.upper()} {path}")
+                                description = endpoint.get("description", "")
                                 request_body_schema = endpoint.get("requestSchema")
+
 
                                 # Add default values
                                 if request_body_schema:
@@ -74,15 +85,15 @@ def generate_openapi(base_url, api_definitions_path, output_file):
                                 } if request_body_schema else None
 
                                 all_paths[path, method] = {
-                                    "summary": endpoint.get("summary", f"{method.upper()} {path}"),
-                                    "description": endpoint.get("description", ""),
+                                    "summary": summary,
+                                    "description": description,
                                     "requestBody": request_body,
                                     "responses": {
                                         "200": {
                                             "description": "Successful response"
                                         }
                                     },
-                                    "security": [{"bearerAuth": []}]  # Apply Bearer security
+                                    # "security": [{"bearerAuth": []}]  # Apply Bearer security (removed - Global security instead)
                                 }
                 except yaml.YAMLError as e:
                     print(f"Error reading YAML file {file_path}: {e}")
@@ -101,12 +112,11 @@ def generate_openapi(base_url, api_definitions_path, output_file):
 
 if __name__ == "__main__":
     # Configuration
-    BASE_URL = "https://unified-api.bitmind.ai/api"  # Corrected Base URL
     API_DEFINITIONS_PATH = "../subnets"  # Path to the subnets directory (relative to the project root)
     OUTPUT_FILE = "./openapi.json"  # Path to save the openapi.json file (relative to the project root)
 
     # Generate OpenAPI specification
-    openapi_spec = generate_openapi(BASE_URL, API_DEFINITIONS_PATH, OUTPUT_FILE)
+    openapi_spec = generate_openapi(API_DEFINITIONS_PATH, OUTPUT_FILE)
 
     # Save to a file (or print to stdout)
     with open(OUTPUT_FILE, "w") as f:

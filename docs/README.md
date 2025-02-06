@@ -73,7 +73,7 @@ There are two ways to serve Swagger UI with Docker: using a `run.sh` script or a
    ./run.sh
    ```
 
-   This script contains the `docker run` command to serve the generated `openapi.json` file. Note: If the output of `openapi.json` is not at the expected location (`../`), the current setup may not work.
+   This script contains the `docker run` command to serve the generated `openapi.json` file.
 
 ### Option 2: Using the Raw `docker run` Command
 
@@ -81,9 +81,9 @@ Alternatively, run the following command directly in your terminal from the `doc
 
 ```bash
 docker run -p 8080:8080 \
-           -v ${PWD}/../:/usr/share/nginx/html \
+           -v ${PWD}/openapi.json:/openapi.json \
            -e SWAGGER_JSON=/openapi.json \
-           swaggerapi/swagger-ui
+           docker.swagger.io/swaggerapi/swagger-ui
 ```
 
 > **Note:** Running the command from the `docs` directory is crucial. Otherwise, `${PWD}` might resolve incorrectly, leading to errors and misconfiguration.
