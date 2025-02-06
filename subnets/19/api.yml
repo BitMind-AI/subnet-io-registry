@@ -185,3 +185,83 @@ endpoints:
           type: integer
           default: 1024
       required: [ image_url ]
+
+  - path: /text/vision/chat
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum: [ user, assistant, system ]
+              content:
+                type: string
+            required: [ role, content ]
+        model:
+          type: string
+          default: llama-3
+        temperature:
+          type: number
+          default: 0.1
+        max_tokens:
+          type: integer
+          default: 500
+        top_p:
+          type: number
+          default: 1
+        stream:
+          type: boolean
+          default: true
+        logprobs:
+          type: boolean
+          default: false
+      required: [ messages ]
+
+  - path: /image/vision/text-to-image  # New endpoint for text-to-image
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        cfg_scale:
+          type: integer
+          default: 2
+        steps:
+          type: integer
+          default: 8
+        engine:
+          type: string
+          default: proteus
+        text_prompts:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+              weight:
+                type: number
+            required: [text]
+        height:
+          type: integer
+          default: 1024
+        width:
+          type: integer
+          default: 1024
+      required: [text_prompts]
