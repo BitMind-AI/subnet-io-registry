@@ -13,7 +13,9 @@ def generate_openapi(api_definitions_path, output_file):
             "version": "v1",
             "description": "Bitmind Oracle API Documentation.",
         },
-        "servers": [{"url": "https://unified-api.bitmind.ai/api"}, {"url": "http://localhost:3000/prod/api"}],  # Moved base URLs here
+        "servers": [{"url": "https://api.bitmind.ai/oracle/v1"},
+                    {"url": "https://staging-api.bitmind.ai/oracle/v1"},
+                    {"url": "http://localhost:3000/prod/oracle/v1"}],  # Moved base URLs here
         "paths": {},
         "components": {
             "securitySchemes": {
