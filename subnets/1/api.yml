@@ -1,4 +1,4 @@
-baseUrl: "https://api.corcel.io/v1/sn1"
+baseUrl: "https://api.corcel.io/v1"
 endpoints:
   - path: /chat
     externalPath: /chat/completions
@@ -14,7 +14,7 @@ endpoints:
       properties:
         model:
           type: string
-          default: Dummy_Model
+          default: llama-3
         messages:
           type: array
           items:
@@ -32,6 +32,9 @@ endpoints:
         max_tokens:
           type: integer
           default: 500
+        top_p:
+          type: integer
+          default: 1
         stream:
           type: boolean
           default: true
