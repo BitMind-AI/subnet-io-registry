@@ -1,6 +1,7 @@
 baseUrl: "https://api.nichetensor.com/api/v1"
 endpoints:
-  - path: /txt2img
+  - path: /text-to-image
+    externalPath: /txt2img
     method: POST
     auth:
       type: header

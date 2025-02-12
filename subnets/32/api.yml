@@ -1,6 +1,7 @@
 baseUrl: "https://api.its-ai.org/api"
 endpoints:
-  - path: /text
+  - path: /detect-text
+    externalPath: /text
     method: POST
     auth:
       type: body
@@ -19,7 +20,8 @@ endpoints:
           default: false
       required: [ text ]
 
-  - path: /batch
+  - path: /detect-text-batch
+    externalPath: /batch
     method: POST
     auth:
       type: body

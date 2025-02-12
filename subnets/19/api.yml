@@ -1,6 +1,7 @@
 baseUrl: "https://api.corcel.io/v1"
 endpoints:
-  - path: /chat/completions
+  - path: /chat
+    externalPath: /chat/completions
     method: POST
     auth:
       type: header
@@ -42,7 +43,8 @@ endpoints:
           default: false
       required: [ model, messages ]
 
-  - path: /text/cortext/chat
+  - path: /cortext/chat
+    externalPath: /text/cortext/chat
     method: POST
     auth:
       type: header
@@ -84,7 +86,8 @@ endpoints:
           default: 0
       required: [ model, messages ]
 
-  - path: /image/cortext/text-to-image
+  - path: /cortext/text-to-image
+    externalPath: /image/cortext/text-to-image
     method: POST
     auth:
       type: header
@@ -123,7 +126,8 @@ endpoints:
           default: 0
       required: [ prompt ]
 
-  - path: /image/vision/image-to-image
+  - path: /vision/image-to-image
+    externalPath: /image/vision/image-to-image
     method: POST
     auth:
       type: header
@@ -153,7 +157,8 @@ endpoints:
           default: "1024x1024"
       required: [ image_url, prompt ]
 
-  - path: /image/vision/avatar
+  - path: /vision/avatar
+    externalPath: /image/vision/avatar
     method: POST
     auth:
       type: header
@@ -186,7 +191,8 @@ endpoints:
           default: 1024
       required: [ image_url ]
 
-  - path: /text/vision/chat
+  - path: /vision/chat
+    externalPath: /text/vision/chat
     method: POST
     auth:
       type: header
@@ -228,7 +234,8 @@ endpoints:
           default: false
       required: [ messages ]
 
-  - path: /image/vision/text-to-image  # New endpoint for text-to-image
+  - path: /vision/text-to-image
+    externalPath: /image/vision/text-to-image
     method: POST
     auth:
       type: header

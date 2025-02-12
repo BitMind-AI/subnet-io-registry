@@ -1,6 +1,7 @@
 baseUrl: "https://subnet-api.bitmindlabs.ai"
 endpoints:
   - path: /detect-image
+    externalPath: /detect-image
     method: POST
     auth:
       type: header

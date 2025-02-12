@@ -1,6 +1,7 @@
 baseUrl: "https://api.corcel.io/v1/condense"
 endpoints:
   - path: /organic
+    externalPath: /organic
     method: POST
     auth:
       type: header
