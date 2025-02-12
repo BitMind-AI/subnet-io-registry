@@ -1,0 +1,13 @@
+{
+  "model": "Dummy_Model",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello, how are you?"
+    }
+  ],
+  "temperature": 0.1,
+  "max_tokens": 500,
+  "stream": false,
+  "logprobs": false
+}

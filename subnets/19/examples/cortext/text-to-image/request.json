@@ -1,0 +1,10 @@
+{
+  "prompt": "A beautiful sunset over mountains",
+  "model": "cortext-image",
+  "style": "vivid",
+  "size": "1024x1024",
+  "quality": "hd",
+  "steps": 30,
+  "cfg_scale": 8,
+  "seed": 0
+}

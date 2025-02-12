@@ -19,25 +19,3 @@ endpoints:
           type: boolean
           default: false
       required: [ text ]
-
-  - path: /detect-text-batch
-    externalPath: /batch
-    method: POST
-    auth:
-      type: body
-      key: "api_key"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
-    requestSchema:
-      type: object
-      properties:
-        texts:
-          type: array
-          items:
-            type: string
-          description: An array of texts to be analyzed for AI-generated content.
-        deep_scan: 
-          type: boolean
-          default: false
-      required: [ texts ]

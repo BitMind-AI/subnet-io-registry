@@ -188,27 +188,39 @@ endpoints:
     requestSchema:
       type: object
       properties:
-        image_url:
+        init_image:
           type: string
-        steps:
-          type: integer
-          default: 8
-        cfg_scale:
-          type: integer
-          default: 2
-        control_strength:
-          type: number
-          default: 0.85
+          description: "Base64 encoded seed image."
+        text_prompts:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+                description: "The prompt used to generate an image."
+              weight:
+                type: number
+                description: "Prompt weight, ranging from -1 to 1."
         ipadapter_strength:
           type: number
           default: 0.5
+          description: "Strength of the IPAdapter model. Defaults to 0.5."
+        control_strength:
+          type: number
+          default: 0.5
+          description: "Strength of control over the input image. Defaults to 0.5."
+        steps:
+          type: integer
+          default: 8
+          description: "Number of steps in the image generation process."
         height:
           type: integer
-          default: 1024
+          default: 1280
         width:
           type: integer
-          default: 1024
-      required: [ image_url ]
+          default: 1280
+      required: [ init_image, text_prompts ]
 
   - path: /vision/chat
     externalPath: /text/vision/chat

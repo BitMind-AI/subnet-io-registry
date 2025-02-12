@@ -1,0 +1,14 @@
+{
+  "id": "chatcmpl-d08b29b7851e468f8d34cdff001384bf",
+  "object": "chat.completion.chunk",
+  "created": 1739374597,
+  "model": "hugging-quants/Meta-Llama-3.1-70B-Instruct-AWQ-INT4",
+  "choices": [
+    {
+      "index": 0,
+      "delta": { "role": "assistant", "content": "" },
+      "logprobs": null,
+      "finish_reason": null
+    }
+  ]
+}

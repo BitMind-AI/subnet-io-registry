@@ -1,0 +1,7 @@
+{
+  "prompt": "What are the recent sport news?",
+  "tools": ["Google Search"],
+  "model": "NOVA",
+  "response_order": "LINKS_FIRST",
+  "date_filter": "PAST_WEEK"
+}

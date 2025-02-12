@@ -1,0 +1,26 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Need help calculating the tip, what is 10% tip on a bill totalling $100"
+    }
+  ],
+  "tools": [
+    {
+      "name": "tip_calculator",
+      "description": "Calculate the tip amount",
+      "arguments": {
+        "bill_amount": {
+          "required": true,
+          "type": "number",
+          "description": "the bill amount in dollars"
+        },
+        "tip_percent": {
+          "required": true,
+          "type": "number",
+          "description": "the tip percentage as a whole number"
+        }
+      }
+    }
+  ]
+}

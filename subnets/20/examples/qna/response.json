@@ -1,0 +1,10 @@
+[
+  {
+    "role": "tool call",
+    "content": "{\"name\": \"tip_calculator\", \"arguments\": {\"bill_amount\": 100, \"tip_percent\": 10}}"
+  },
+  {
+    "role": "assistant",
+    "content": "Using a 10% tip rate on a $100 bill results in a tip of $10."
+  }
+]

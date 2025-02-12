@@ -1,0 +1,17 @@
+[
+  {
+    "messages": "Give me an image of a cute, phantom, cockapoo. Very cute, not too fluffy",
+    "model": "cortext-image",
+    "style": "vivid",
+    "size": "1024x1024",
+    "quality": "hd",
+    "completion": null,
+    "steps": 30,
+    "sampler": "",
+    "cfg_scale": 8,
+    "seed": 0,
+    "provider": "OpenAI",
+    "prompt": "A beautiful sunset over mountains",
+    "image_url": "https://corcel.b-cdn.net/3294af65-bb87-4be3-9c46-5f50b39213ab.webp"
+  }
+]

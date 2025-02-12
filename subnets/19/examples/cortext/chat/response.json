@@ -1,0 +1,23 @@
+[
+  {
+    "choices": [
+      {
+        "message": {
+          "role": "user",
+          "content": "Machine learning is a subset of artificial intelligence (AI) that involves the development of algorithms and statistical models that enable computers to perform tasks without explicit instructions. Instead of being programmed with specific rules, machine learning systems learn from data to identify patterns, make decisions, and improve their performance over time.\n\nKey aspects of machine learning include:\n\n1. **Data Input**: Machine learning models require large amounts of data to learn from. This data can be structured (like databases) or unstructured (like text and"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "system_fingerprint": null,
+    "id": "chatcmpl-tEGXiayjTs_QuCyYdRhYyA",
+    "created": 1739374983,
+    "usage": {
+      "prompt_tokens": 25,
+      "completion_tokens": 101,
+      "total_tokens": 126
+    },
+    "object": "chat.completion",
+    "model": "gpt-4o"
+  }
+]

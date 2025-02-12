@@ -1,0 +1,14 @@
+{
+  "model": "llama-3",
+  "messages": [
+    {
+      "role": "user",
+      "content": "What is machine learning?"
+    }
+  ],
+  "temperature": 0.1,
+  "max_tokens": 100,
+  "top_p": 1,
+  "stream": false,
+  "logprobs": false
+}
