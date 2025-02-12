@@ -1,5 +1,5 @@
 {
-  "model": "Dummy_Model",
+  "model": "llama-3",
   "messages": [
     {
       "role": "user",
@@ -8,6 +8,7 @@
   ],
   "temperature": 0.1,
   "max_tokens": 500,
+  "top_p": 1,
   "stream": false,
   "logprobs": false
 }

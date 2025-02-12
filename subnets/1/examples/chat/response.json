@@ -1,14 +1,20 @@
 {
-  "id": "chatcmpl-d08b29b7851e468f8d34cdff001384bf",
-  "object": "chat.completion.chunk",
-  "created": 1739374597,
-  "model": "hugging-quants/Meta-Llama-3.1-70B-Instruct-AWQ-INT4",
+  "id": "chatcmpl-CgPOAiO6T9KfqiizhxTJpQ",
+  "object": "chat.completion",
+  "created": 1739377986,
+  "model": "llama-3-1-70b",
   "choices": [
     {
-      "index": 0,
-      "delta": { "role": "assistant", "content": "" },
-      "logprobs": null,
-      "finish_reason": null
+      "message": {
+        "role": "assistant",
+        "content": "Hello! I'm just a language model, so I don't have feelings or emotions like humans do, but I'm functioning properly and ready to help with any questions or tasks you may have. How about you? How's your day going?"
+      }
     }
-  ]
+  ],
+  "usage": {
+    "prompt_tokens": 19,
+    "completion_tokens": 86,
+    "total_tokens": 105
+  },
+  "system_fingerprint": null
 }
