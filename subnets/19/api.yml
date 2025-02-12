@@ -55,33 +55,39 @@ endpoints:
     requestSchema:
       type: object
       properties:
-        prompt:
+        messages:
           type: string
+          description: "The prompt used to create the image."
         model:
           type: string
-          default: cortext-image
-        style:
-          type: string
-          enum: [ natural, vivid ]
-          default: vivid
+          default: "cortext-image"
+          description: "The model used to generate the image."
         size:
           type: string
           enum: [ "256x256", "512x512", "1024x1024" ]
           default: "1024x1024"
+          description: "The dimensions of the created image."
         quality:
           type: string
-          enum: [ hd, standard ]
-          default: hd
+          enum: [ "hd", "standard" ]
+          default: "standard"
+          description: "The quality/resolution of the generated images."
+        provider:
+          type: string
+          default: "OpenAI"
+          description: "The provider used for text-to-image generation."
         steps:
           type: integer
-          default: 30
+          default: 5
+          description: "Number of steps in the image generation process (allowed values: 5-10)."
         cfg_scale:
-          type: number
-          default: 8.0
-        seed:
           type: integer
-          default: 0
-      required: [ prompt ]
+          default: 8
+          description: "Classifier-Free Guidance Scale."
+        style:
+          type: string
+          description: "Optional style parameter."
+      required: [ messages, model, size, quality ]
 
   - path: /vision/chat
     externalPath: /text/vision/chat

@@ -1,11 +1,11 @@
 {
-  "model": "llama-3",
   "messages": [
     {
       "role": "user",
-      "content": "What is machine learning?"
+      "content": "Hello, how are you?"
     }
   ],
+  "model": "llama-3",
   "temperature": 0.1,
   "max_tokens": 100,
   "top_p": 1,

@@ -1,0 +1,20 @@
+{
+  "id": "chatcmpl-Q3g9MriBTyCAh9KrbFVN9g",
+  "object": "chat.completion",
+  "created": 1739377516,
+  "model": "llama-3-1-70b",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "Hello! I'm just a computer program, so I don't have feelings, but thank you for asking! How can I assist you today?"
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 19,
+    "completion_tokens": 64,
+    "total_tokens": 83
+  },
+  "system_fingerprint": null
+}
