@@ -78,14 +78,49 @@ def generate_openapi(api_definitions_path, output_file):
                                 if request_body_schema:
                                     request_body_schema = add_defaults_to_schema(request_body_schema)
 
-                                request_body = {
-                                    "required": True,
-                                    "content": {
-                                        "application/json": {
-                                            "schema": request_body_schema
+                                # Get content type from headers or default to application/json
+                                content_type = endpoint.get("headers", {}).get("Content-Type", "application/json")
+                                
+                                # Handle different content types appropriately
+                                if content_type == "multipart/form-data" and request_body_schema:
+                                    # For multipart/form-data, handle file uploads correctly
+                                    # Transform properties with type: file to binary format
+                                    form_schema = {
+                                        "type": "object",
+                                        "properties": {},
+                                        "required": request_body_schema.get("required", [])
+                                    }
+                                    
+                                    for prop_name, prop_details in request_body_schema.get("properties", {}).items():
+                                        if prop_details.get("type") == "file":
+                                            # For file uploads, use binary format
+                                            form_schema["properties"][prop_name] = {
+                                                "type": "string",
+                                                "format": "binary",
+                                                "description": prop_details.get("description", "")
+                                            }
+                                        else:
+                                            # For non-file properties
+                                            form_schema["properties"][prop_name] = prop_details
+                                    
+                                    request_body = {
+                                        "required": True,
+                                        "content": {
+                                            "multipart/form-data": {
+                                                "schema": form_schema
+                                            }
                                         }
-                                    },
-                                } if request_body_schema else None
+                                    }
+                                else:
+                                    # Default case for application/json
+                                    request_body = {
+                                        "required": True,
+                                        "content": {
+                                            content_type: {
+                                                "schema": request_body_schema
+                                            }
+                                        }
+                                    } if request_body_schema else None
 
                                 all_paths[path, method] = {
                                     "summary": summary,
