@@ -42,3 +42,57 @@ endpoints:
         fqdn:
           type: string
           description: Fully qualified domain name of the validator that generated the inference result.
+
+  - path: /detect-video
+    externalPath: /detect-video
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "Bearer {{api-key}}"
+    headers:
+      Content-Type: multipart/form-data
+    requestSchema:
+      type: object
+      properties:
+        video:
+          type: file
+          description: >
+            Video file uploaded as form data.
+            - Max duration is limited by frame count (144 frames maximum, roughly 6 seconds at 24fps).
+            - Supported formats: mp4, mov, avi.
+      required: [video]
+    responseSchema:
+      type: object
+      properties:
+        isAI:
+          type: boolean
+          description: Indicates if the video is predicted to be AI-generated.
+        confidence:
+          type: number
+          format: float
+          description: Overall confidence score of the inference result.
+        frameResults:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: number
+                format: float
+                description: Timestamp of the analyzed frame in seconds.
+              isAI:
+                type: boolean
+                description: Indicates if this frame is predicted to be AI-generated.
+              confidence:
+                type: number
+                format: float
+                description: Confidence score for this specific frame.
+          description: Results for individual analyzed frames.
+        similarity:
+          type: number
+          format: float
+          description: Similarity to known AI-generated content.
+        fqdn:
+          type: string
+          description: Fully qualified domain name of the validator that generated the inference result.
