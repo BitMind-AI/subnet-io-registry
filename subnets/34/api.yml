@@ -1,4 +1,4 @@
-baseUrl: "https://subnet-api.bitmindlabs.ai"
+baseUrl: "https://staging-subnet-api.bitmindlabs.ai"
 endpoints:
   - path: /detect-image
     externalPath: /detect-image
