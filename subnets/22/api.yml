@@ -1,7 +1,7 @@
-baseUrl: "https://api.corcel.io/v1/sn22"
+baseUrl: "https://apis.datura.ai"
 endpoints:
   - path: /search
-    externalPath: /search
+    externalPath: /desearch/ai/search
     method: POST
     auth:
       type: header
@@ -20,20 +20,328 @@ endpoints:
           description: "List of search tools to use for fetching data"
           items:
             type: string
-            enum: [ "Twitter Search", "Google Search", "Google News Search", "Google Image Search", "Bing Search", "ArXiv Search", "Wikipedia Search", "Youtube Search", "Hacker News Search", "Reddit Search" ]
+            enum:
+              [
+                "web",
+                "hackernews",
+                "reddit",
+                "wikipedia",
+                "youtube",
+                "twitter",
+                "arxiv",
+              ]
         model:
           type: string
           description: "Model to use for scraping"
-          enum: [ "NOVA", "ORBIT", "HORIZON" ]
+          enum: ["NOVA", "ORBIT", "HORIZON"]
           default: "NOVA"
-        response_order:
-          type: string
-          description: "Order of results presentation"
-          enum: [ "LINKS_FIRST", "SUMMARY_FIRST" ]
-          default: "LINKS_FIRST"
         date_filter:
           type: string
           description: "Time range filter for results"
-          enum: [ "PAST_24_HOURS", "PAST_2_DAYS", "PAST_WEEK", "PAST_2_WEEKS", "PAST_MONTH", "PAST_2_MONTHS", "PAST_YEAR", "PAST_2_YEARS" ]
+          enum:
+            [
+              "PAST_24_HOURS",
+              "PAST_2_DAYS",
+              "PAST_WEEK",
+              "PAST_2_WEEKS",
+              "PAST_MONTH",
+              "PAST_2_MONTHS",
+              "PAST_YEAR",
+              "PAST_2_YEARS",
+            ]
           default: "PAST_WEEK"
-      required: [ prompt, tools ]
+        streaming:
+          type: boolean
+          description: "Whether to stream results"
+          default: true
+        result_type:
+          type: string
+          description: "The result type for the search"
+          enum:
+            ["ONLY_LINKS", "LINKS_WITH_SUMMARIES", "LINKS_WITH_FINAL_SUMMARY"]
+          default: "LINKS_WITH_FINAL_SUMMARY"
+        system_message:
+          type: string
+          description: "Custom system message to be used for the search"
+      required: ["prompt", "tools", "model", "date_filter", "streaming"]
+
+  - path: /search/links/web
+    externalPath: /desearch/ai/search/links/web
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: "Search query prompt"
+        tools:
+          type: array
+          description: "List of tools to search with"
+          items:
+            type: string
+            enum:
+              ["web", "hackernews", "reddit", "wikipedia", "youtube", "arxiv"]
+        model:
+          type: string
+          description: "Model to use for scraping"
+          enum: ["NOVA", "ORBIT", "HORIZON"]
+          default: "NOVA"
+      required: ["prompt", "tools"]
+
+  - path: /search/links/twitter
+    externalPath: /desearch/ai/search/links/twitter
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: "Search query prompt"
+        model:
+          type: string
+          description: "Model to use for scraping"
+          enum: ["NOVA", "ORBIT", "HORIZON"]
+          default: "NOVA"
+      required: ["prompt"]
+
+  - path: /twitter
+    externalPath: /twitter
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: query
+        description: "Search query. For syntax, check https://docs.datura.ai/guides/capabilities/twitter-queries"
+        required: true
+      - name: sort
+        description: "Sort by Top or Latest"
+        required: false
+        enum: ["Top", "Latest"]
+      - name: user
+        description: "User to search for"
+        required: false
+      - name: start_date
+        description: "Start date in UTC (YYYY-MM-DD format)"
+        required: false
+      - name: end_date
+        description: "End date in UTC (YYYY-MM-DD format)"
+        required: false
+      - name: lang
+        description: "Language code (e.g., en, es, fr)"
+        required: false
+      - name: verified
+        description: "Filter for verified users"
+        required: false
+        type: boolean
+      - name: blue_verified
+        description: "Filter for blue checkmark verified users"
+        required: false
+        type: boolean
+      - name: is_quote
+        description: "Include only tweets with quotes"
+        required: false
+        type: boolean
+      - name: is_video
+        description: "Include only tweets with videos"
+        required: false
+        type: boolean
+      - name: is_image
+        description: "Include only tweets with images"
+        required: false
+        type: boolean
+      - name: min_retweets
+        description: "Minimum number of retweets"
+        required: false
+      - name: min_replies
+        description: "Minimum number of replies"
+        required: false
+      - name: min_likes
+        description: "Minimum number of likes"
+        required: false
+      - name: count
+        description: "Number of tweets to retrieve"
+        required: false
+        default: 20
+        minimum: 1
+        maximum: 100
+
+  - path: /twitter/urls
+    externalPath: /twitter/urls
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: urls
+        description: "List of urls that is to be retrieved"
+        required: true
+        type: array
+        items:
+          type: string
+
+  - path: /twitter/post
+    externalPath: /twitter/post
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: id
+        description: "Post ID to retrieve"
+        required: true
+
+  - path: /twitter/user/posts
+    externalPath: /twitter/post/user
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: user
+        description: "User to search for"
+        required: true
+      - name: query
+        description: "Search query. For syntax, check https://docs.datura.ai/guides/capabilities/twitter-queries"
+        required: false
+        default: ""
+      - name: count
+        description: "Number of tweets to retrieve"
+        required: false
+        default: 10
+        minimum: 1
+        maximum: 100
+
+  - path: /twitter/user/latest
+    externalPath: /twitter/latest
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: user
+        description: "User to search for"
+        required: true
+      - name: count
+        description: "Number of tweets to retrieve"
+        required: false
+        default: 10
+        minimum: 1
+        maximum: 100
+
+  - path: /twitter/user/replies
+    externalPath: /twitter/replies
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: user
+        description: "The username of the user to search for"
+        required: true
+      - name: count
+        description: "The number of tweets to fetch"
+        required: false
+        default: 10
+        minimum: 1
+        maximum: 100
+      - name: query
+        description: "Search query. For syntax, check https://docs.datura.ai/guides/capabilities/twitter-queries"
+        required: false
+        default: ""
+
+  - path: /twitter/post/replies
+    externalPath: /twitter/replies/post
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: post_id
+        description: "The ID of the post to search for"
+        required: true
+      - name: count
+        description: "The number of tweets to fetch"
+        required: false
+        default: 10
+        minimum: 1
+        maximum: 100
+      - name: query
+        description: "Search query. For syntax, check https://docs.datura.ai/guides/capabilities/twitter-queries"
+        required: false
+        default: ""
+
+  - path: /twitter/post/retweets
+    externalPath: /twitter/retweets/post
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: post_id
+        description: "The ID of the post to search for"
+        required: true
+      - name: count
+        description: "The number of tweets to fetch"
+        required: false
+        default: 10
+        minimum: 1
+        maximum: 100
+      - name: query
+        description: "Search query. For syntax, check https://docs.datura.ai/guides/capabilities/twitter-queries"
+        required: false
+        default: ""
+
+  - path: /twitter/user
+    externalPath: /twitter/user
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: user
+        description: "User to search for"
+        required: true
+
+  - path: /web
+    externalPath: /web
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    queryParams:
+      - name: query
+        description: "The search query string"
+        required: true
+      - name: num
+        description: "Count of results to get"
+        required: true
+        type: integer
+      - name: start
+        description: "How many results to skip (used for pagination with num)"
+        required: true
+        type: integer
+        minimum: 1
+        maximum: 100

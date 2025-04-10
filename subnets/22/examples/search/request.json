@@ -1,7 +1,9 @@
 {
-  "prompt": "What are the recent sport news?",
-  "tools": ["Google Search"],
+  "prompt": "What is Bittensor's approach to decentralized machine learning?",
+  "tools": ["web", "reddit", "hackernews", "arxiv"],
   "model": "NOVA",
-  "response_order": "LINKS_FIRST",
-  "date_filter": "PAST_WEEK"
+  "date_filter": "PAST_MONTH",
+  "streaming": true,
+  "result_type": "LINKS_WITH_FINAL_SUMMARY",
+  "system_message": "Focus on technical details and recent developments."
 }
