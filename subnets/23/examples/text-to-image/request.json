@@ -1,8 +1,0 @@
-{
-  "prompt": "a cute cat",
-  "model_name": "AnimeV3",
-  "seed": 0,
-  "aspect_ratio": "13:19",
-  "negative_prompt": "low quality",
-  "advanced_params": { "num_inference_steps": 20, "use_expansion": true }
-}

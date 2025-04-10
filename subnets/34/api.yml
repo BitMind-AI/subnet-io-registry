@@ -6,7 +6,7 @@ endpoints:
     auth:
       type: header
       key: "Authorization"
-      value: "Bearer {{api-key}}"
+      value: "{{api-key}}"
     headers:
       Content-Type: application/json
     requestSchema:
@@ -49,7 +49,7 @@ endpoints:
     auth:
       type: header
       key: "Authorization"
-      value: "Bearer {{api-key}}"
+      value: "{{api-key}}"
     headers:
       Content-Type: multipart/form-data
     requestSchema:

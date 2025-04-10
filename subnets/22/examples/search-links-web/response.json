@@ -1,0 +1,59 @@
+{
+  "youtube_search_results": [],
+  "hacker_news_search_results": [
+    {
+      "organic_results": [
+        {
+          "position": 1,
+          "title": "The Current State of Decentralized AI Development",
+          "link": "https://news.ycombinator.com/item?id=39876543",
+          "displayed_link": "news.ycombinator.com/item?id=39876543",
+          "favicon": "https://news.ycombinator.com/favicon.ico",
+          "date": "3 days ago",
+          "snippet": "An overview of progress in decentralized AI systems and their potential impact on how we build and deploy machine learning models.",
+          "source": "Hacker News",
+          "inline": [],
+          "summary_description": "Hacker News discussion on decentralized AI development trends"
+        }
+      ]
+    }
+  ],
+  "reddit_search_results": [
+    {
+      "organic_results": [
+        {
+          "position": 1,
+          "title": "Breakthrough in Decentralized Training Methods",
+          "link": "https://www.reddit.com/r/MachineLearning/comments/abc987",
+          "displayed_link": "reddit.com/r/MachineLearning/comments/abc987",
+          "favicon": "https://www.reddit.com/favicon.ico",
+          "date": "1 week ago",
+          "snippet": "Researchers have demonstrated a new approach to training large models across decentralized hardware with improved efficiency.",
+          "source": "Reddit",
+          "inline": [],
+          "summary_description": "Reddit post discussing new research in decentralized model training"
+        }
+      ]
+    }
+  ],
+  "wikipedia_search_results": [],
+  "arxiv_search_results": [],
+  "search_results": [
+    {
+      "organic_results": [
+        {
+          "position": 1,
+          "title": "The Rise of Decentralized AI Networks",
+          "link": "https://example-tech-blog.com/decentralized-ai-networks",
+          "displayed_link": "example-tech-blog.com/decentralized-ai-networks",
+          "favicon": "https://example-tech-blog.com/favicon.ico",
+          "date": "2 days ago",
+          "snippet": "Decentralized AI networks are gaining traction as alternatives to centralized cloud-based AI services, offering benefits in privacy, cost, and ownership.",
+          "source": "Tech Blog",
+          "inline": [],
+          "summary_description": "Overview of decentralized AI network development and adoption"
+        }
+      ]
+    }
+  ]
+}
