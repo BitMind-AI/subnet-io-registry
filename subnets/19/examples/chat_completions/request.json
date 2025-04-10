@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "What is machine learning?"
+    }
+  ],
+  "temperature": 0.5,
+  "max_tokens": 500,
+  "model": "unsloth/Llama-3.2-3B-Instruct",
+  "top_p": 1,
+  "stream": true,
+  "logprobs": true
+}

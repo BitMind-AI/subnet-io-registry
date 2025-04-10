@@ -1,96 +1,7 @@
-baseUrl: "https://api.corcel.io/v1"
+baseUrl: "https://api.nineteen.ai/v1"
 endpoints:
-  - path: /cortext/chat
-    externalPath: /text/cortext/chat
-    method: POST
-    auth:
-      type: header
-      key: "Authorization"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
-    requestSchema:
-      type: object
-      properties:
-        model:
-          type: string
-          default: cortext-ultra
-        messages:
-          type: array
-          items:
-            type: object
-            properties:
-              role:
-                type: string
-                enum: [ user, assistant, system ]
-              content:
-                type: string
-            required: [ role, content ]
-        temperature:
-          type: number
-          default: 0.0001
-        max_tokens:
-          type: integer
-          default: 4000
-        top_p:
-          type: number
-          default: 1
-        stream:
-          type: boolean
-          default: true
-        seed:
-          type: integer
-          default: 0
-      required: [ model, messages ]
-
-  - path: /cortext/text-to-image
-    externalPath: /image/cortext/text-to-image
-    method: POST
-    auth:
-      type: header
-      key: "Authorization"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
-    requestSchema:
-      type: object
-      properties:
-        messages:
-          type: string
-          description: "The prompt used to create the image."
-        model:
-          type: string
-          default: "cortext-image"
-          description: "The model used to generate the image."
-        size:
-          type: string
-          enum: [ "256x256", "512x512", "1024x1024" ]
-          default: "1024x1024"
-          description: "The dimensions of the created image."
-        quality:
-          type: string
-          enum: [ "hd", "standard" ]
-          default: "standard"
-          description: "The quality/resolution of the generated images."
-        provider:
-          type: string
-          default: "OpenAI"
-          description: "The provider used for text-to-image generation."
-        steps:
-          type: integer
-          default: 5
-          description: "Number of steps in the image generation process (allowed values: 5-10)."
-        cfg_scale:
-          type: integer
-          default: 8
-          description: "Classifier-Free Guidance Scale."
-        style:
-          type: string
-          description: "Optional style parameter."
-      required: [ messages, model, size, quality ]
-
-  - path: /vision/chat
-    externalPath: /text/vision/chat
+  - path: /chat/completions
+    externalPath: /chat/completions
     method: POST
     auth:
       type: header
@@ -108,32 +19,42 @@ endpoints:
             properties:
               role:
                 type: string
-                enum: [ user, assistant, system ]
+                enum: [user, assistant, system]
+                default: user
               content:
                 type: string
-            required: [ role, content ]
-        model:
-          type: string
-          default: llama-3
+                examples: ["What is machine learning?"]
+            required: [content]
         temperature:
           type: number
-          default: 0.1
+          minimum: 0
+          maximum: 5
+          default: 0.5
+          description: "Temperature for text generation"
         max_tokens:
           type: integer
           default: 500
+          description: "Max tokens for text generation"
+        model:
+          type: string
+          examples: ["unsloth/Llama-3.2-3B-Instruct"]
         top_p:
           type: number
+          minimum: 0
+          maximum: 1
           default: 1
+          description: "Top P for text generation"
         stream:
           type: boolean
           default: true
+          description: "Stream for text generation"
         logprobs:
           type: boolean
-          default: false
-      required: [ messages ]
+          default: true
+      required: [messages, model]
 
-  - path: /vision/text-to-image
-    externalPath: /image/vision/text-to-image
+  - path: /completions
+    externalPath: /completions
     method: POST
     auth:
       type: header
@@ -144,29 +65,289 @@ endpoints:
     requestSchema:
       type: object
       properties:
-        cfg_scale:
+        prompt:
+          type: string
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 5
+          default: 0.5
+          description: "Temperature for text generation"
+        max_tokens:
           type: integer
-          default: 2
+          default: 500
+          description: "Max tokens for text generation"
+        model:
+          type: string
+          examples: ["unsloth/Llama-3.2-3B-Instruct"]
+        top_p:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 1
+          description: "Top P for text generation"
+        stream:
+          type: boolean
+          default: true
+          description: "Stream for text generation"
+        logprobs:
+          type: boolean
+          default: true
+      required: [prompt, model]
+
+  - path: /models
+    externalPath: /models
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+
+  - path: /text-to-image
+    externalPath: /text-to-image
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: "Prompt for image generation"
+        negative_prompt:
+          type: string
+          description: "Negative prompt for image generation"
+          default: ""
         steps:
           type: integer
-          default: 8
-        engine:
-          type: string
-          default: proteus
-        text_prompts:
-          type: array
-          items:
-            type: object
-            properties:
-              text:
-                type: string
-              weight:
-                type: number
-            required: [text]
-        height:
-          type: integer
-          default: 1024
+          exclusiveMinimum: 4
+          exclusiveMaximum: 50
+          default: 10
+          description: "Number of inference steps, higher for more quality but increased generation time"
+        cfg_scale:
+          type: number
+          exclusiveMinimum: 1.5
+          exclusiveMaximum: 12
+          default: 3
+          description: "Guidance scale"
         width:
           type: integer
+          minimum: 512
+          exclusiveMaximum: 2048
           default: 1024
-      required: [text_prompts]
+          description: "Width for image generation"
+        height:
+          type: integer
+          minimum: 512
+          exclusiveMaximum: 2048
+          default: 1024
+          description: "Height for image generation"
+        model:
+          type: string
+          examples: ["proteus_text_to_image"]
+      required: [prompt, model]
+
+  - path: /image-to-image
+    externalPath: /image-to-image
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        init_image:
+          type: string
+          description: "Base64 encoded image"
+          examples:
+            [
+              "https://lastfm.freetls.fastly.net/i/u/770x0/443c5e1c35fd38bb5a49a7d00612dab3.jpg#443c5e1c35fd38bb5a49a7d00612dab3",
+            ]
+        prompt:
+          type: string
+          examples: ["A beautiful landscape with a river and mountains"]
+        negative_prompt:
+          type: string
+          description: "Negative prompt for image generation"
+        steps:
+          type: integer
+          exclusiveMinimum: 4
+          exclusiveMaximum: 50
+          default: 10
+          description: "Number of inference steps, higher for more quality but increased generation time"
+        cfg_scale:
+          type: number
+          exclusiveMinimum: 1
+          exclusiveMaximum: 12
+          default: 3
+          description: "Guidance scale"
+        width:
+          type: integer
+          minimum: 512
+          exclusiveMaximum: 2048
+          default: 1024
+          description: "Width for image generation"
+        height:
+          type: integer
+          minimum: 512
+          exclusiveMaximum: 2048
+          default: 1024
+          description: "Height for image generation"
+        model:
+          type: string
+          examples: ["proteus_image_to_image"]
+        image_strength:
+          type: number
+          exclusiveMinimum: 0.01
+          exclusiveMaximum: 1
+          default: 0.5
+          description: "Image strength of the generated image with respect to the original image"
+      required: [init_image, prompt, model]
+
+  - path: /avatar
+    externalPath: /avatar
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: "Prompt for avatar generation"
+          examples: ["A futuristic Man in a city with flying cars"]
+        negative_prompt:
+          type: string
+          description: "Negative prompt for avatar generation"
+          examples: ["wheels"]
+        steps:
+          type: integer
+          exclusiveMinimum: 4
+          exclusiveMaximum: 50
+          default: 10
+          description: "Steps for avatar generation"
+        cfg_scale:
+          type: number
+          default: 3
+          description: "CFG scale for avatar generation"
+        width:
+          type: integer
+          minimum: 512
+          exclusiveMaximum: 2048
+          default: 1024
+          description: "Width for avatar generation"
+        height:
+          type: integer
+          minimum: 512
+          exclusiveMaximum: 2048
+          default: 1024
+          description: "Height for avatar generation"
+        ipadapter_strength:
+          type: number
+          exclusiveMinimum: 0.1
+          maximum: 1
+          default: 0.5
+          description: "Image Adapter Strength for avatar generation"
+        control_strength:
+          type: number
+          exclusiveMinimum: 0.1
+          maximum: 1
+          default: 0.5
+          description: "Control Strength for avatar generation"
+        init_image:
+          type: string
+          description: "Base64 encoded or URL for image"
+          examples:
+            [
+              "https://lastfm.freetls.fastly.net/i/u/770x0/443c5e1c35fd38bb5a49a7d00612dab3.jpg#443c5e1c35fd38bb5a49a7d00612dab3",
+            ]
+      required: [prompt, init_image]
+
+  - path: /models/image
+    externalPath: /models/image
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+
+  - path: /auditing/tasks
+    externalPath: /auditing/tasks
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    queryParams:
+      - name: limit
+        type: integer
+        default: 100
+        description: "Integer numbers."
+      - name: page
+        type: integer
+        default: 1
+        description: "Integer numbers."
+
+  - path: /auditing/tasks/hotkey/{hotkey}
+    externalPath: /auditing/tasks/hotkey/{hotkey}
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    pathParams:
+      - name: hotkey
+        type: string
+        required: true
+    queryParams:
+      - name: limit
+        type: integer
+        default: 100
+        description: "Integer numbers."
+      - name: page
+        type: integer
+        default: 1
+        description: "Integer numbers."
+
+  - path: /auditing/tasks/{task_id}
+    externalPath: /auditing/tasks/{task_id}
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    pathParams:
+      - name: task_id
+        type: string
+        required: true
+
+  - path: /auditing/scores-url
+    externalPath: /auditing/scores-url
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
