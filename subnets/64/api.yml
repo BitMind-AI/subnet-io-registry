@@ -15,8 +15,14 @@ endpoints:
         model:
           type: string
           default: "deepseek-ai/DeepSeek-V3-0324"
-          enum: ["deepseek-ai/DeepSeek-V3-0324"]
-          description: "The model to use for chat completion. Will support more models in the future."
+          enum: [
+            "deepseek-ai/DeepSeek-V3-0324",
+            "chutesai/Mistral-Small-3.1-24B-Instruct-2503",
+            "deepseek-ai/DeepSeek-R1",
+            "chutesai/Llama-4-Maverick-17B-128E-Instruct-FP8",
+            "deepseek-ai/DeepSeek-V3"
+          ]
+          description: "The model to use for chat completion."
         messages:
           type: array
           items:
@@ -62,14 +68,6 @@ endpoints:
           type: boolean
           default: false
           description: "Whether to return log probabilities of the output tokens."
-        response_format:
-          type: object
-          properties:
-            type:
-              type: string
-              enum: [text, json_object, json_schema]
-          required: [type]
-          description: "Format of the response content."
       required: [model, messages]
 
   - path: /completions
@@ -87,8 +85,14 @@ endpoints:
         model:
           type: string
           default: "deepseek-ai/DeepSeek-V3-0324"
-          enum: ["deepseek-ai/DeepSeek-V3-0324"]
-          description: "The model to use for completion. Will support more models in the future."
+          enum: [
+            "deepseek-ai/DeepSeek-V3-0324",
+            "chutesai/Mistral-Small-3.1-24B-Instruct-2503",
+            "deepseek-ai/DeepSeek-R1",
+            "chutesai/Llama-4-Maverick-17B-128E-Instruct-FP8",
+            "deepseek-ai/DeepSeek-V3"
+          ]
+          description: "The model to use for completion."
         prompt:
           type: string
           description: "Text to generate completion for."
