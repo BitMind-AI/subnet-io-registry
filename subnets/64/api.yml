@@ -1,0 +1,129 @@
+baseUrl: "https://llm.chutes.ai/v1"
+endpoints:
+  - path: /chat/completions
+    externalPath: /chat/completions
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "Bearer {{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        model:
+          type: string
+          default: "deepseek-ai/DeepSeek-V3-0324"
+          enum: ["deepseek-ai/DeepSeek-V3-0324"]
+          description: "The model to use for chat completion. Will support more models in the future."
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum: [user, assistant, system]
+              content:
+                type: string
+            required: [role, content]
+        temperature:
+          type: number
+          default: 0.7
+          minimum: 0
+          maximum: 1
+          description: "Controls randomness in the response. Lower is more deterministic."
+        max_tokens:
+          type: integer
+          default: 1024
+          description: "Maximum number of tokens to generate."
+        top_p:
+          type: number
+          default: 1
+          minimum: 0
+          maximum: 1
+          description: "Controls diversity via nucleus sampling."
+        stream:
+          type: boolean
+          default: true
+          description: "Whether to stream the response."
+        seed:
+          type: integer
+          description: "Seed for deterministic generation. Defaults to random if not provided."
+        stop:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          description: "Sequence where the API will stop generating tokens."
+        logprobs:
+          type: boolean
+          default: false
+          description: "Whether to return log probabilities of the output tokens."
+        response_format:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [text, json_object, json_schema]
+          required: [type]
+          description: "Format of the response content."
+      required: [model, messages]
+
+  - path: /completions
+    externalPath: /completions
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "Bearer {{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        model:
+          type: string
+          default: "deepseek-ai/DeepSeek-V3-0324"
+          enum: ["deepseek-ai/DeepSeek-V3-0324"]
+          description: "The model to use for completion. Will support more models in the future."
+        prompt:
+          type: string
+          description: "Text to generate completion for."
+        temperature:
+          type: number
+          default: 0.7
+          minimum: 0
+          maximum: 1
+          description: "Controls randomness in the response. Lower is more deterministic."
+        max_tokens:
+          type: integer
+          default: 1024
+          description: "Maximum number of tokens to generate."
+        top_p:
+          type: number
+          default: 1
+          minimum: 0
+          maximum: 1
+          description: "Controls diversity via nucleus sampling."
+        stream:
+          type: boolean
+          default: true
+          description: "Whether to stream the response."
+        seed:
+          type: integer
+          description: "Seed for deterministic generation. Defaults to random if not provided."
+        stop:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          description: "Sequence where the API will stop generating tokens."
+        logprobs:
+          type: boolean
+          default: false
+          description: "Whether to return log probabilities of the output tokens."
+      required: [model, prompt]

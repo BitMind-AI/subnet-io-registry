@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-123456789",
+  "object": "chat.completion",
+  "created": 1712345678,
+  "model": "deepseek-ai/DeepSeek-V3-0324",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "The Last Lighthouse\n\nMarcus stood at the edge of the cliff, salt spray misting his weathered face. The lighthouse behind him—the last of its kind in this digital age—had guided ships safely to shore for over a century. Tonight would be its final broadcast.\n\nTechnological progress had made traditional lighthouses obsolete. Satellite navigation and automated systems had replaced the need for the rotating beacon. The government had decommissioned all others years ago, but this one had received special dispensation until tonight.\n\nFor fifty years, Marcus had tended the light. He knew every creak of the spiral staircase, every crack in the lens housing. The lighthouse was more than stone and light—it was his life's purpose.\n\nAs dusk settled over the horizon, a small fishing vessel appeared. Marcus recognized it immediately—the Marianne, captained by his estranged daughter Elena. They hadn't spoken since her mother's funeral a decade ago.\n\nHe watched as she navigated the treacherous shoals, guided by his light one final time. The beam swept across the darkening water, revealing the safe channel through the rocks.\n\nWhen Elena's boat docked at the small pier below, Marcus descended the lighthouse steps. They stood facing each other, the gulf of years between them.\n\n\"I heard they're shutting it down,\" she said finally.\n\n\"Progress marches on,\" Marcus replied, his voice rough with emotion.\n\nElena nodded toward the horizon. \"I wanted to see it one last time. To remember how it guided me home.\"\n\nAs night fell completely, they climbed the tower together. At midnight, Marcus turned the switch for the final time. The light died, but something else flickered to life between father and daughter—a new beginning as an old era ended."
+      },
+      "finish_reason": "stop",
+      "index": 0
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 15,
+    "completion_tokens": 309,
+    "total_tokens": 324
+  }
+}
