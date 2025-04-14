@@ -1,9 +1,9 @@
 {
-  "prompt": "A photorealistic image of a serene mountain lake at sunset, with reflections of the mountains on the water surface",
-  "negative_prompt": "blurry, distorted, low quality",
-  "steps": 10,
+  "prompt": "A fluffy cat",
+  "model": "dataautogpt3/ProteusV0.4-Lightning",
+  "steps": 8,
   "cfg_scale": 3,
-  "width": 1024,
   "height": 1024,
-  "model": "proteus_text_to_image"
+  "width": 1024,
+  "negative_prompt": ""
 }

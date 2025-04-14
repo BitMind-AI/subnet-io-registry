@@ -23,7 +23,7 @@ endpoints:
                 default: user
               content:
                 type: string
-                examples: ["What is machine learning?"]
+                examples: ["What is the capital of France?"]
             required: [content]
         temperature:
           type: number
@@ -42,15 +42,12 @@ endpoints:
           type: number
           minimum: 0
           maximum: 1
-          default: 1
+          default: 0.5
           description: "Top P for text generation"
         stream:
           type: boolean
           default: true
           description: "Stream for text generation"
-        logprobs:
-          type: boolean
-          default: true
       required: [messages, model]
 
   - path: /completions
@@ -67,6 +64,7 @@ endpoints:
       properties:
         prompt:
           type: string
+          examples: ["The most loved programming language is"]
         temperature:
           type: number
           minimum: 0
@@ -75,7 +73,7 @@ endpoints:
           description: "Temperature for text generation"
         max_tokens:
           type: integer
-          default: 500
+          default: 50
           description: "Max tokens for text generation"
         model:
           type: string
@@ -84,26 +82,13 @@ endpoints:
           type: number
           minimum: 0
           maximum: 1
-          default: 1
+          default: 0.5
           description: "Top P for text generation"
         stream:
           type: boolean
           default: true
           description: "Stream for text generation"
-        logprobs:
-          type: boolean
-          default: true
       required: [prompt, model]
-
-  - path: /models
-    externalPath: /models
-    method: GET
-    auth:
-      type: header
-      key: "Authorization"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
 
   - path: /text-to-image
     externalPath: /text-to-image
@@ -120,6 +105,7 @@ endpoints:
         prompt:
           type: string
           description: "Prompt for image generation"
+          examples: ["A fluffy cat"]
         negative_prompt:
           type: string
           description: "Negative prompt for image generation"
@@ -128,11 +114,11 @@ endpoints:
           type: integer
           exclusiveMinimum: 4
           exclusiveMaximum: 50
-          default: 10
+          default: 8
           description: "Number of inference steps, higher for more quality but increased generation time"
         cfg_scale:
           type: number
-          exclusiveMinimum: 1.5
+          exclusiveMinimum: 1
           exclusiveMaximum: 12
           default: 3
           description: "Guidance scale"
@@ -150,7 +136,7 @@ endpoints:
           description: "Height for image generation"
         model:
           type: string
-          examples: ["proteus_text_to_image"]
+          examples: ["dataautogpt3/ProteusV0.4-Lightning"]
       required: [prompt, model]
 
   - path: /image-to-image
@@ -167,17 +153,18 @@ endpoints:
       properties:
         init_image:
           type: string
-          description: "Base64 encoded image"
+          description: "URL for image"
           examples:
             [
               "https://lastfm.freetls.fastly.net/i/u/770x0/443c5e1c35fd38bb5a49a7d00612dab3.jpg#443c5e1c35fd38bb5a49a7d00612dab3",
             ]
         prompt:
           type: string
-          examples: ["A beautiful landscape with a river and mountains"]
+          examples: ["Make his hat blue"]
         negative_prompt:
           type: string
           description: "Negative prompt for image generation"
+          default: ""
         steps:
           type: integer
           exclusiveMinimum: 4
@@ -204,7 +191,7 @@ endpoints:
           description: "Height for image generation"
         model:
           type: string
-          examples: ["proteus_image_to_image"]
+          examples: ["dataautogpt3/ProteusV0.4-Lightning"]
         image_strength:
           type: number
           exclusiveMinimum: 0.01
@@ -228,11 +215,11 @@ endpoints:
         prompt:
           type: string
           description: "Prompt for avatar generation"
-          examples: ["A futuristic Man in a city with flying cars"]
+          examples: ["Make his hat blue"]
         negative_prompt:
           type: string
           description: "Negative prompt for avatar generation"
-          examples: ["wheels"]
+          default: ""
         steps:
           type: integer
           exclusiveMinimum: 4
@@ -269,85 +256,9 @@ endpoints:
           description: "Control Strength for avatar generation"
         init_image:
           type: string
-          description: "Base64 encoded or URL for image"
+          description: "URL for image"
           examples:
             [
               "https://lastfm.freetls.fastly.net/i/u/770x0/443c5e1c35fd38bb5a49a7d00612dab3.jpg#443c5e1c35fd38bb5a49a7d00612dab3",
             ]
       required: [prompt, init_image]
-
-  - path: /models/image
-    externalPath: /models/image
-    method: GET
-    auth:
-      type: header
-      key: "Authorization"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
-
-  - path: /auditing/tasks
-    externalPath: /auditing/tasks
-    method: GET
-    auth:
-      type: header
-      key: "Authorization"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
-    queryParams:
-      - name: limit
-        type: integer
-        default: 100
-        description: "Integer numbers."
-      - name: page
-        type: integer
-        default: 1
-        description: "Integer numbers."
-
-  - path: /auditing/tasks/hotkey/{hotkey}
-    externalPath: /auditing/tasks/hotkey/{hotkey}
-    method: GET
-    auth:
-      type: header
-      key: "Authorization"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
-    pathParams:
-      - name: hotkey
-        type: string
-        required: true
-    queryParams:
-      - name: limit
-        type: integer
-        default: 100
-        description: "Integer numbers."
-      - name: page
-        type: integer
-        default: 1
-        description: "Integer numbers."
-
-  - path: /auditing/tasks/{task_id}
-    externalPath: /auditing/tasks/{task_id}
-    method: GET
-    auth:
-      type: header
-      key: "Authorization"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
-    pathParams:
-      - name: task_id
-        type: string
-        required: true
-
-  - path: /auditing/scores-url
-    externalPath: /auditing/scores-url
-    method: GET
-    auth:
-      type: header
-      key: "Authorization"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
