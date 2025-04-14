@@ -6,7 +6,7 @@ endpoints:
     auth:
       type: header
       key: "Authorization"
-      value: "{{api-key}}"
+      value: "Bearer {{api-key}}"
     headers:
       Content-Type: application/json
     requestSchema:
