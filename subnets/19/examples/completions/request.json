@@ -4,6 +4,5 @@
   "temperature": 0.5,
   "max_tokens": 50,
   "top_p": 0.5,
-  "stream": true,
-  "logprobs": true
+  "stream": false
 }

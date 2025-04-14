@@ -46,7 +46,7 @@ endpoints:
           description: "Top P for text generation"
         stream:
           type: boolean
-          default: true
+          default: false
           description: "Stream for text generation"
       required: [messages, model]
 
@@ -86,7 +86,7 @@ endpoints:
           description: "Top P for text generation"
         stream:
           type: boolean
-          default: true
+          default: false
           description: "Stream for text generation"
       required: [prompt, model]
 
