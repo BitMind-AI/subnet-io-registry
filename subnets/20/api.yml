@@ -1,12 +1,12 @@
-baseUrl: "https://api.corcel.io/v1/sn20"
+baseUrl: "https://api.gogoagent.ai/v1"
 endpoints:
-  - path: /qna
-    externalPath: /qna_task
+  - path: /chat
+    externalPath: /chat/completions
     method: POST
     auth:
       type: header
       key: "Authorization"
-      value: "{{api-key}}"
+      value: "Bearer {{api-key}}"
     headers:
       Content-Type: application/json
     requestSchema:
@@ -20,15 +20,15 @@ endpoints:
             properties:
               role:
                 type: string
-                enum: [ "user", "assistant", "system" ]
+                enum: ["user", "assistant", "system"]
                 description: "Role of the message sender"
               content:
                 type: string
                 description: "Message content"
-            required: [ role, content ]
+            required: [role, content]
         tools:
           type: array
-          description: "List of tools to be used for query processing"
+          description: "List of tools available for the model to use"
           items:
             type: object
             properties:
@@ -41,31 +41,16 @@ endpoints:
               arguments:
                 type: object
                 description: "Tool arguments schema"
-                properties:
-                  bill_amount:
-                    type: object
-                    properties:
-                      required:
-                        type: boolean
-                        description: "Whether this argument is required"
-                      type:
-                        type: string
-                        enum: [ "number" ]
-                        description: "Data type of the argument"
-                      description:
-                        type: string
-                        description: "Description of the argument"
-                  tip_percent:
-                    type: object
-                    properties:
-                      required:
-                        type: boolean
-                        description: "Whether this argument is required"
-                      type:
-                        type: string
-                        enum: [ "number" ]
-                        description: "Data type of the argument"
-                      description:
-                        type: string
-                        description: "Description of the argument"
-      required: [ messages, tools ]
+                additionalProperties:
+                  type: object
+                  properties:
+                    required:
+                      type: boolean
+                      description: "Whether this argument is required"
+                    type:
+                      type: string
+                      description: "Data type of the argument"
+                    description:
+                      type: string
+                      description: "Description of the argument"
+      required: [messages]

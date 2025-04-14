@@ -1,0 +1,42 @@
+{
+  "data": [
+    {
+      "title": "Bittensor: A Peer-to-Peer Intelligence Market",
+      "snippet": "Bittensor is an open-source protocol that powers a decentralized network of machine learning models. It allows anyone to build and connect machine learning systems, competing to provide the best intelligence to users.",
+      "link": "https://bittensor.com/",
+      "date": "2 days ago",
+      "source": "Bittensor",
+      "author": null,
+      "image": "https://bittensor.com/images/logo.png",
+      "favicon": "https://bittensor.com/favicon.ico",
+      "highlights": ["Bittensor", "machine learning", "decentralized network"]
+    },
+    {
+      "title": "Understanding Bittensor: The Decentralized Machine Learning Network",
+      "snippet": "Bittensor creates a market where machine learning models can be trained collectively, with participants earning rewards based on the quality of their contributions to the network. This innovative approach aims to democratize artificial intelligence.",
+      "link": "https://medium.com/example-blog/understanding-bittensor-decentralized-ml",
+      "date": "3 weeks ago",
+      "source": "Medium",
+      "author": "AI Researcher",
+      "image": "https://medium.com/images/example-bittensor.jpg",
+      "favicon": "https://medium.com/favicon.ico",
+      "highlights": [
+        "Bittensor",
+        "machine learning",
+        "decentralized",
+        "artificial intelligence"
+      ]
+    },
+    {
+      "title": "How Bittensor's Decentralized Neural Network Is Changing AI",
+      "snippet": "The Bittensor network uses a unique consensus mechanism where machine learning models compete to serve valuable intelligence to the network. Models that provide useful outputs are rewarded with the network's native token, TAO.",
+      "link": "https://www.example-tech-journal.com/articles/bittensor-changing-ai",
+      "date": "1 month ago",
+      "source": "Tech Journal",
+      "author": "Tech Reporter",
+      "image": "https://www.example-tech-journal.com/images/bittensor-article.jpg",
+      "favicon": "https://www.example-tech-journal.com/favicon.ico",
+      "highlights": ["Bittensor", "decentralized", "neural network", "AI"]
+    }
+  ]
+}

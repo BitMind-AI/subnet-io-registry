@@ -1,0 +1,5 @@
+{
+  "prompt": "What are recent developments in decentralized AI?",
+  "tools": ["web", "reddit", "hackernews"],
+  "model": "NOVA"
+}

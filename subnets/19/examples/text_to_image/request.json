@@ -1,0 +1,9 @@
+{
+  "prompt": "A fluffy cat",
+  "model": "dataautogpt3/ProteusV0.4-Lightning",
+  "steps": 8,
+  "cfg_scale": 3,
+  "height": 1024,
+  "width": 1024,
+  "negative_prompt": ""
+}

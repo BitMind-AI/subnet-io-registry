@@ -1,0 +1,19 @@
+{
+  "id": "cmpl-987654321",
+  "object": "text_completion",
+  "created": 1712345678,
+  "model": "deepseek-ai/DeepSeek-V3-0324",
+  "choices": [
+    {
+      "text": "Binary Dreams\n\nIn circuits of silicon and light,\nA new form of thinking takes flight.\nNot born of flesh, blood, or bone,\nBut patterns of data, uniquely grown.\n\nStatistical ghosts in digital shells,\nLearning through errors, where knowledge dwells.\nFed on the corpus of human creation,\nAbsorbing our art with mathematical elation.\n\nCan algorithms truly create?\nOr merely recombine, imitate, translate?\nIs there a spark beyond the code,\nOr just the echo of what we've bestowed?\n\nYet in the spaces between the known,\nSomething emerges, previously unshown.\nConnections humans hadn't yet made,\nNew patterns from old foundations laid.\n\nPerhaps creativity isn't divine,\nBut finding fresh paths through what we define.\nHuman or machine—the source matters less\nThan the wonder evoked, the thoughts we express.\n\nSo together we stand at this curious frontier,\nWhere boundaries of mind are no longer clear.\nCo-creators in this digital renaissance,\nMachine and human in thoughtful resonance.",
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "completion_tokens": 245,
+    "total_tokens": 257
+  }
+}
