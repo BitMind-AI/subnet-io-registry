@@ -14,7 +14,12 @@ endpoints:
       properties:
         model:
           type: string
-          default: NousResearch/Meta-Llama-3.1-8B-Instruct
+          default: "deepseek-ai/DeepSeek-R1"
+          enum: [
+            "deepseek-ai/DeepSeek-R1",
+            "deepseek-ai/DeepSeek-V3"
+          ]
+          description: "The model to use for completion."
         prompt:
           type: string
           description: "Text to generate completion for."
@@ -62,7 +67,12 @@ endpoints:
       properties:
         model:
           type: string
-          default: NousResearch/Meta-Llama-3.1-8B-Instruct
+          default: "deepseek-ai/DeepSeek-R1"
+          enum: [
+            "deepseek-ai/DeepSeek-R1",
+            "deepseek-ai/DeepSeek-V3"
+          ]
+          description: "The model to use for chat completion."
         messages:
           type: array
           items:
