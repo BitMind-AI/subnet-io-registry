@@ -1,7 +1,7 @@
-baseUrl: "https://api.condenses.ai"
+baseUrl: "https://api.condenses.ai/v1/api"
 endpoints:
-  - path: /v1/api/compress/text
-    externalPath: /v1/api/compress/text
+  - path: /compress/text
+    externalPath: /compress/text
     method: POST
     auth:
       type: header
@@ -27,8 +27,8 @@ endpoints:
           default: 0.1
       required: [ text ]
 
-  - path: /v1/api/compress/messages
-    externalPath: /v1/api/compress/messages
+  - path: /compress/messages
+    externalPath: /compress/messages
     method: POST
     auth:
       type: header
