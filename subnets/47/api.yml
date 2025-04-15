@@ -1,20 +1,52 @@
-baseUrl: "https://api.corcel.io/v1/condense"
+baseUrl: "https://api.condenses.ai"
 endpoints:
-  - path: /organic
-    externalPath: /organic
+  - path: /v1/api/compress/text
+    externalPath: /v1/api/compress/text
     method: POST
     auth:
       type: header
       key: "Authorization"
-      value: "{{api-key}}"
+      value: "Bearer {{api-key}}"
     headers:
       Content-Type: application/json
+    queryParams:
+      - name: ooc_status_code
+        description: "Status code to return when user runs out of credits (208 or 402)"
+        required: false
+        enum: [208, 402]
+    requestSchema:
+      type: object
+      properties:
+        text:
+          type: string
+          description: "Text to be compressed"
+          default: "In machine learning, the perceptron is an algorithm for supervised learning of binary classifiers. A binary classifier is a function which can decide whether or not an input, represented by a vector of numbers, belongs to some specific class. It is a type of linear classifier, i.e. a classification algorithm that makes its predictions based on a linear predictor function combining a set of weights with the feature vector."
+        top_node_performance:
+          type: number
+          description: "Performance parameter for compression"
+          default: 0.1
+      required: [ text ]
+
+  - path: /v1/api/compress/messages
+    externalPath: /v1/api/compress/messages
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "Bearer {{api-key}}"
+    headers:
+      Content-Type: application/json
+    queryParams:
+      - name: ooc_status_code
+        description: "Status code to return when user runs out of credits (208 or 402)"
+        required: false
+        enum: [208, 402]
     requestSchema:
       type: object
       properties:
         messages:
           type: array
-          description: "List of messages where each message has a 'role' and 'content' key"
+          description: "List of messages where each message has a 'role' and 'content' key."
           items:
             type: object
             properties:
@@ -22,26 +54,22 @@ endpoints:
                 type: string
                 enum: [ "user", "assistant", "system" ]
                 description: "Role of the message sender"
+                default: "user"
               content:
                 type: string
                 description: "Content of the message"
+                default: "Tell the user that they need to supply a proper message body"
             required: [ role, content ]
-        tier:
-          type: string
-          description: "Inference tier"
-          enum: [ "inference_0", "inference_1", "research" ]
-          default: "research"
-        target_model:
-          type: string
-          description: "Model to use for condensing text"
-          enum: [ "mistralai/Mistral-7B-Instruct-v0.2" ]
-          default: "mistralai/Mistral-7B-Instruct-v0.2"
-        miner_uid:
-          type: integer
-          description: "Miner UID"
-          default: -1
-        top_incentive:
+        compress_user:
+          type: boolean
+          description: "Whether to compress user messages"
+          default: true
+        compress_assistant:
+          type: boolean
+          description: "Whether to compress assistant messages"
+          default: true
+        top_node_performance:
           type: number
-          description: "Top incentive value"
-          default: 0.9
+          description: "Performance parameter for compression"
+          default: 0.1
       required: [ messages ]

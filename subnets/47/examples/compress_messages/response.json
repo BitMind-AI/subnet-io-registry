@@ -1,0 +1,14 @@
+{
+  "compressed": [
+    {
+      "role": "user",
+      "content": "Inform the user suitable message content is required."
+    }
+  ],
+  "metadata": {
+    "original_tkn_count": 19,
+    "compressed_tkn_count": 16,
+    "credit_cost": 1.5000000000000002e-7,
+    "condensed_pct": 15.79
+  }
+}
