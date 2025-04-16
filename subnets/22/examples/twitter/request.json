@@ -1,1 +1,7 @@
-{"query": "Bittensor", "sort": "Top", "count": 10, "lang": "en", "verified": true}
+{
+  "query": "Bittensor",
+  "sort": "Top",
+  "count": 10,
+  "lang": "en",
+  "verified": true
+}

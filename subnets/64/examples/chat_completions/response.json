@@ -2,7 +2,7 @@
   "id": "chatcmpl-123456789",
   "object": "chat.completion",
   "created": 1712345678,
-  "model": "deepseek-ai/DeepSeek-V3-0324",
+  "model": "Qwen/Qwen2.5-VL-32B-Instruct",
   "choices": [
     {
       "message": {

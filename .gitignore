@@ -45,3 +45,5 @@ temp/
 *.bak
 
 #If you are using any secrets, add secret related variable
+
+.env
