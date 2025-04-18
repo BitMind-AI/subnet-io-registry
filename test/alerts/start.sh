@@ -6,18 +6,36 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
+# Function to build the project
+build_project() {
+  echo "Building project..."
+  npm run build
+  echo "Build completed"
+}
+
 # Function to start or restart the service
 start_service() {
   echo "Starting/restarting subnet-alerts service..."
+  
+  # Build the project first
+  build_project
+  
+  # Check if we're already running under PM2
+  if [ "$PM2_HOME" != "" ]; then
+    echo "Already running under PM2, skipping restart to avoid loops"
+    return
+  fi
+  
   # Check if PM2 is installed
   if command -v pm2 &> /dev/null; then
     # Use PM2 if available
-    pm2 restart subnet-alerts 2>/dev/null || pm2 start npm --name "subnet-alerts" -- start
+    # Start with direct node command to avoid npm start which would call this script again
+    pm2 restart subnet-alerts 2>/dev/null || pm2 start dist/index.js --name "subnet-alerts"
     echo "Service started with PM2"
   else
     # Fall back to regular node if PM2 is not available
     echo "PM2 not found, starting with node directly"
-    nohup npm start > alerts.log 2>&1 &
+    nohup node dist/index.js > alerts.log 2>&1 &
     echo "Service started with PID: $!"
   fi
 }
@@ -55,6 +73,7 @@ is_webhook_call() {
 # Main execution
 case "$1" in
   start)
+    # Start the service using PM2 or nohup
     start_service
     ;;
   update)
