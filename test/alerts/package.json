@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "ts-node src/index.ts",
     "test": "jest",
-    "start": "./start.sh start",
+    "start:pm2": "./start.sh start",
     "update": "./start.sh update",
     "start:dev": "node dist/index.js",
     "start:webhook": "node dist/index.js --webhook-only",

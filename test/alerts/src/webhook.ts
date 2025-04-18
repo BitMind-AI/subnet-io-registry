@@ -1,4 +1,4 @@
-import { exec } from 'child_process'
+import { exec, execSync } from 'child_process'
 import crypto from 'crypto'
 import fs from 'fs'
 import http from 'http'
@@ -52,16 +52,42 @@ function handleWebhook(
       // Parse payload
       const webhookData = JSON.parse(payload.toString()) as WebhookPayload
 
-      // Only process pushes to the main branch
-      if (
-        webhookData.ref !== 'refs/heads/main' &&
-        webhookData.ref !== 'refs/heads/master'
-      ) {
-        console.log(`Ignoring push to ${webhookData.ref}`)
+      // Get the branch name from the webhook data
+      const branchName = webhookData.ref.replace('refs/heads/', '')
+
+      // Get the current branch of the repository
+      const getCurrentBranch = () => {
+        try {
+          // Execute git command to get current branch
+          const currentBranch = execSync(
+            `cd ${config.repoPath} && git rev-parse --abbrev-ref HEAD`,
+            { encoding: 'utf8' }
+          ).trim()
+          return currentBranch
+        } catch (error) {
+          console.error('Error getting current branch:', error)
+          // Default to main if we can't determine the current branch
+          return 'main'
+        }
+      }
+
+      const currentBranch = getCurrentBranch()
+
+      // Only process pushes to the current branch
+      if (branchName !== currentBranch) {
+        console.log(
+          `Ignoring push to ${branchName} branch (current branch is ${currentBranch})`
+        )
         res.statusCode = 200
-        res.end('Ignored non-main branch push')
+        res.end(
+          `Ignored push to ${branchName} branch. Only pushes to the current branch (${currentBranch}) are processed.`
+        )
         return
       }
+
+      console.log(
+        `Processing push to ${branchName} branch (matches current branch)`
+      )
 
       console.log(`Received valid webhook from ${webhookData.pusher.name}`)
       console.log(`Repository: ${webhookData.repository.full_name}`)
@@ -70,9 +96,9 @@ function handleWebhook(
       // Execute update script
       const scriptPath = path.join(config.repoPath, 'test/alerts/start.sh')
       console.log('Executing update script...')
-      // Use npm run update if the script exists, otherwise fall back to direct execution
+      // Use webhook-update command to avoid restart loops
       const updateCommand = fs.existsSync(scriptPath)
-        ? `${scriptPath} update`
+        ? `${scriptPath} webhook-update`
         : 'npm run update'
 
       console.log(`Running command: ${updateCommand}`)

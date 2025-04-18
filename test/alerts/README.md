@@ -65,8 +65,8 @@ npm run build
 ### Service Management
 
 ```bash
-# Start the service (uses PM2 if available, falls back to nohup)
-npm start
+# Start the service with PM2 (if available, falls back to nohup)
+npm run start:pm2
 
 # Update the repository and restart the service
 npm run update
@@ -139,12 +139,9 @@ Quick setup:
 2. Start the service:
    ```bash
    # Start the service (uses PM2 if available)
-   npm start
+   npm run start:pm2
 
-   # Start the service without sending Slack notifications
-   npm start -- --skip-slack
-
-   # Or start only the webhook server
+   # Start only the webhook server
    npm run start:webhook
    ```
 
