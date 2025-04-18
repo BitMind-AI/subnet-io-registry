@@ -52,16 +52,22 @@ function handleWebhook(
       // Parse payload
       const webhookData = JSON.parse(payload.toString()) as WebhookPayload
 
-      // Only process pushes to the main branch
-      if (
-        webhookData.ref !== 'refs/heads/main' &&
-        webhookData.ref !== 'refs/heads/master'
-      ) {
+      // Only process pushes to the main, master, or staging branches
+      const allowedBranches = ['main', 'master', 'staging']
+      const branchName = webhookData.ref.replace('refs/heads/', '')
+
+      if (!allowedBranches.includes(branchName)) {
         console.log(`Ignoring push to ${webhookData.ref}`)
         res.statusCode = 200
-        res.end('Ignored non-main branch push')
+        res.end(
+          `Ignored push to ${branchName} branch. Only ${allowedBranches.join(
+            ', '
+          )} branches are processed.`
+        )
         return
       }
+
+      console.log(`Processing push to ${branchName} branch`)
 
       console.log(`Received valid webhook from ${webhookData.pusher.name}`)
       console.log(`Repository: ${webhookData.repository.full_name}`)

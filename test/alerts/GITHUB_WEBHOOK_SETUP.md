@@ -100,6 +100,21 @@ git commit -m "Test webhook"
 git push
 ```
 
+## How the Webhook Works
+
+The webhook server processes pushes to specific branches and automatically updates your service:
+
+1. When a push is made to the `main`, `master`, or `staging` branch, GitHub sends a POST request to your webhook server
+2. The server verifies the request signature using your secret
+3. The server checks which branch was pushed to and only processes allowed branches (`main`, `master`, and `staging`)
+4. If valid, it executes the `start.sh update` script which:
+   - Pulls the latest changes from the repository
+   - Installs dependencies and rebuilds the project
+   - Restarts the service using PM2 (if available) or nohup
+5. The server responds with a success message and logs the update process
+
+Pushes to other branches are logged but ignored, allowing you to use feature branches without triggering updates.
+
 ## Step 5: Secure Your Webhook (Optional but Recommended)
 
 For production environments, it's recommended to use HTTPS for your webhook. You can set up Nginx as a reverse proxy with Let's Encrypt SSL certificates:
