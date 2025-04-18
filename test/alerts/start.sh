@@ -41,6 +41,17 @@ update_repo() {
   echo "Repository updated successfully"
 }
 
+# Function to check if we're being called from the webhook
+is_webhook_call() {
+  # Check if this script is being called from the webhook server
+  # by examining the parent process
+  parent_cmd=$(ps -o cmd= -p $PPID)
+  if [[ $parent_cmd == *"node"* && $parent_cmd == *"webhook"* ]]; then
+    return 0  # True, this is a webhook call
+  fi
+  return 1  # False, not a webhook call
+}
+
 # Main execution
 case "$1" in
   start)
@@ -48,12 +59,27 @@ case "$1" in
     ;;
   update)
     update_repo
-    start_service
+    
+    # Only restart the service if this is not called from the webhook
+    # or if the --force-restart flag is provided
+    if [[ "$2" == "--force-restart" ]] || ! is_webhook_call; then
+      echo "Restarting service after update..."
+      start_service
+    else
+      echo "Update completed. Service will not be restarted as it was called from webhook."
+      echo "Changes will be applied on next manual restart or service reload."
+    fi
+    ;;
+  webhook-update)
+    # Special case for webhook updates - update without restarting
+    update_repo
+    echo "Repository updated by webhook. Service NOT restarted to avoid restart loops."
     ;;
   *)
-    echo "Usage: $0 {start|update}"
-    echo "  start  - Start or restart the service"
-    echo "  update - Pull latest changes and restart the service"
+    echo "Usage: $0 {start|update|webhook-update}"
+    echo "  start         - Start or restart the service"
+    echo "  update        - Pull latest changes and restart the service"
+    echo "  webhook-update - Update repository without restarting service"
     exit 1
     ;;
 esac
