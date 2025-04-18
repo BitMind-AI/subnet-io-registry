@@ -2,13 +2,89 @@ import axios from 'axios'
 import { Config, TestResult } from './types'
 
 /**
- * Format currency for display
+ * Format duration for display
  */
 function formatDuration(ms: number): string {
   if (ms < 1000) {
     return `${ms}ms`
   }
   return `${(ms / 1000).toFixed(2)}s`
+}
+
+/**
+ * Get performance category based on response time
+ * @param responseTime Response time in ms
+ * @param avgTime Average response time for comparison
+ */
+function getPerformanceCategory(
+  responseTime: number,
+  avgTime: number
+): 'fast' | 'average' | 'slow' {
+  if (responseTime < avgTime * 0.7) {
+    return 'fast'
+  } else if (responseTime > avgTime * 1.3) {
+    return 'slow'
+  }
+  return 'average'
+}
+
+/**
+ * Get emoji for performance category
+ */
+function getPerformanceEmoji(category: 'fast' | 'average' | 'slow'): string {
+  switch (category) {
+    case 'fast':
+      return '🚀'
+    case 'slow':
+      return '🐢'
+    default:
+      return '⏱️'
+  }
+}
+
+/**
+ * Format a table for Slack output
+ */
+function formatSlackTable(headers: string[], rows: string[][]): string {
+  // Calculate column widths
+  const colWidths = headers.map((header, i) => {
+    const maxContentWidth = Math.max(
+      header.length,
+      ...rows.map((row) => (row[i] || '').length)
+    )
+    return maxContentWidth + 2 // Add padding
+  })
+
+  // Create header row
+  let table = '```\n'
+  headers.forEach((header, i) => {
+    table += header.padEnd(colWidths[i])
+  })
+  table += '\n'
+
+  // Add separator
+  headers.forEach((_, i) => {
+    table += '-'.repeat(colWidths[i])
+  })
+  table += '\n'
+
+  // Add data rows
+  rows.forEach((row) => {
+    row.forEach((cell, i) => {
+      table += (cell || '').padEnd(colWidths[i])
+    })
+    table += '\n'
+  })
+
+  table += '```'
+  return table
+}
+
+/**
+ * Create a Slack block divider
+ */
+function slackDivider(): any {
+  return { type: 'divider' }
 }
 
 /**
@@ -53,11 +129,14 @@ export async function sendSlackNotification(
         type: 'mrkdwn',
         text: `*Test Summary*\n• Total tests: ${totalTests}\n• Passed: ${
           passedTests.length
-        } (${passRate}%)\n• Failed: ${
+        } (${passRate}%) ${passRate === 100 ? '✅' : ''}\n• Failed: ${
           failedTests.length
+        } ${
+          failedTests.length > 0 ? '❌' : ''
         }\n• Average response time: ${formatDuration(avgResponseTime)}`,
       },
     },
+    slackDivider(),
   ]
 
   // Add failed test details if any
@@ -66,7 +145,7 @@ export async function sendSlackNotification(
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: '*Failed Tests*',
+        text: '❌ *Failed Tests*',
       },
     })
 
@@ -79,23 +158,35 @@ export async function sendSlackNotification(
       failuresBySubnet[test.subnetId].push(test)
     }
 
-    // Add each subnet's failures
+    // Add each subnet's failures as a table
     for (const [subnetId, failures] of Object.entries(failuresBySubnet)) {
       blocks.push({
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*Subnet ${subnetId}*:\n${failures
-            .map(
-              (test) =>
-                `• ${test.endpoint.path} - ${test.error || 'Unknown error'} (${
-                  test.statusCode || 'No status code'
-                })`
-            )
-            .join('\n')}`,
+          text: `*Subnet ${subnetId}*:`,
+        },
+      })
+
+      // Create table headers and rows
+      const headers = ['Status', 'Endpoint', 'Response Time', 'Error']
+      const rows = failures.map((test) => [
+        '❌',
+        test.endpoint.path,
+        formatDuration(test.responseTime || 0),
+        test.error || 'Unknown error',
+      ])
+
+      blocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: formatSlackTable(headers, rows),
         },
       })
     }
+
+    blocks.push(slackDivider())
   } else {
     blocks.push({
       type: 'section',
@@ -104,6 +195,7 @@ export async function sendSlackNotification(
         text: '✅ *All tests passed successfully!*',
       },
     })
+    blocks.push(slackDivider())
   }
 
   // Add detailed performance metrics if this is a detailed report
@@ -112,7 +204,7 @@ export async function sendSlackNotification(
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: '*Detailed Performance Metrics*',
+        text: '📈 *Detailed Performance Metrics*',
       },
     })
 
@@ -132,53 +224,61 @@ export async function sendSlackNotification(
         subnetResults.reduce((sum, r) => sum + (r.responseTime || 0), 0) /
         subnetResults.length
 
-      const slowestEndpoint = [...subnetResults].sort(
-        (a, b) => (b.responseTime || 0) - (a.responseTime || 0)
-      )[0]
-
-      const fastestEndpoint = [...subnetResults].sort(
-        (a, b) => (a.responseTime || 0) - (b.responseTime || 0)
-      )[0]
-
       const subnetPassRate = Math.round(
         (subnetResults.filter((r) => r.success).length / subnetResults.length) *
           100
       )
 
-      // Add subnet summary
+      // Add subnet summary with status emoji
+      const statusEmoji =
+        subnetPassRate === 100 ? '✅' : subnetPassRate >= 80 ? '⚠️' : '❌'
+
       blocks.push({
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*Subnet ${subnetId}*:\n• Endpoints tested: ${
+          text: `*Subnet ${subnetId}* - ${statusEmoji} ${subnetPassRate}% Pass Rate\n• Endpoints tested: ${
             subnetResults.length
-          }\n• Pass rate: ${subnetPassRate}%\n• Avg response time: ${formatDuration(
-            subnetAvgTime
-          )}`,
+          }\n• Avg response time: ${formatDuration(subnetAvgTime)}`,
         },
       })
 
-      // Add all endpoints for this subnet
+      // Create a formatted table for Slack
+      // Sort by response time (slowest first)
       const sortedEndpoints = [...subnetResults].sort(
         (a, b) => (b.responseTime || 0) - (a.responseTime || 0)
       )
 
-      let endpointsList = ''
-      for (const result of sortedEndpoints) {
+      // Create table headers and rows
+      const headers = ['Status', 'Endpoint', 'Response Time', 'Performance']
+      const rows = sortedEndpoints.map((result) => {
         const status = result.success ? '✅' : '❌'
-        endpointsList += `${status} ${result.endpoint.path} - ${formatDuration(
-          result.responseTime || 0
-        )} ${!result.success ? `(${result.error || 'Error'})` : ''}\n`
-      }
+        const perfCategory = getPerformanceCategory(
+          result.responseTime || 0,
+          subnetAvgTime
+        )
+        const perfEmoji = getPerformanceEmoji(perfCategory)
+
+        return [
+          status,
+          result.endpoint.path,
+          formatDuration(result.responseTime || 0),
+          `${perfEmoji} ${
+            perfCategory.charAt(0).toUpperCase() + perfCategory.slice(1)
+          }`,
+        ]
+      })
 
       blocks.push({
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: endpointsList,
+          text: formatSlackTable(headers, rows),
         },
       })
     }
+
+    blocks.push(slackDivider())
   }
 
   // Add timestamp
@@ -282,21 +382,63 @@ export async function sendSlackNotification(
             )})`
           )
 
-          // List all endpoints with their response times
-          console.log('\nAll endpoints:')
+          // Create a table for all endpoints
+          console.log('\nAll endpoints (sorted by response time):')
+
           // Sort by response time (slowest first)
           const sortedEndpoints = [...subnetResults].sort(
             (a, b) => (b.responseTime || 0) - (a.responseTime || 0)
           )
 
+          // Find the longest path to align the table
+          const longestPath = sortedEndpoints.reduce(
+            (max, result) => Math.max(max, result.endpoint.path.length),
+            0
+          )
+
+          // Create table header
+          console.log(
+            '┌─────┬' +
+              '─'.repeat(longestPath + 2) +
+              '┬────────────┬─────────────┬───────────────────────────┐'
+          )
+          console.log(
+            '│ Sts │ ' +
+              'Endpoint'.padEnd(longestPath) +
+              ' │ Time      │ Performance │ Error                     │'
+          )
+          console.log(
+            '├─────┼' +
+              '─'.repeat(longestPath + 2) +
+              '┼────────────┼─────────────┼───────────────────────────┤'
+          )
+
+          // Add each endpoint to the table
           for (const result of sortedEndpoints) {
-            const status = result.success ? '✅' : '❌'
+            const status = result.success ? ' ✓  ' : ' ✗  '
+            const path = result.endpoint.path.padEnd(longestPath)
+            const time = formatDuration(result.responseTime || 0).padEnd(10)
+            const perfCategory = getPerformanceCategory(
+              result.responseTime || 0,
+              subnetAvgTime
+            )
+            const perfEmoji = getPerformanceEmoji(perfCategory)
+            const performance = `${perfEmoji} ${perfCategory.padEnd(9)}`
+            const error = result.success
+              ? ' '.repeat(25)
+              : (result.error || 'Error').substring(0, 25).padEnd(25)
+
             console.log(
-              `${status} ${result.endpoint.path} - ${formatDuration(
-                result.responseTime || 0
-              )} ${!result.success ? `(${result.error || 'Error'})` : ''}`
+              `│${status}│ ${path} │ ${time} │ ${performance} │ ${error} │`
             )
           }
+
+          // Close the table
+          console.log(
+            '└─────┴' +
+              '─'.repeat(longestPath + 2) +
+              '┴────────────┴─────────────┴───────────────────────────┘'
+          )
         }
       }
 
