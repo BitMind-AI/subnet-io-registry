@@ -5,9 +5,16 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "start": "./start.sh start",
+    "update": "./start.sh update",
+    "start:dev": "node dist/index.js",
+    "start:webhook": "node dist/index.js --webhook-only",
+    "now": "ts-node src/index.ts --now",
+    "now:detailed": "ts-node src/index.ts --now --detailed",
+    "now:skip-slack": "ts-node src/index.ts --now --skip-slack",
+    "now:detailed:skip-slack": "ts-node src/index.ts --now --detailed --skip-slack"
   },
   "dependencies": {
     "@types/form-data": "^2.2.1",

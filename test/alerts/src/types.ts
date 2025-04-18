@@ -50,6 +50,7 @@ export interface ValidationResult {
 // Configuration types
 export interface Config {
   testSchedule: string
+  detailedReportSchedule: string
   slackWebhookUrl: string
   slackChannelId: string
   slackBotToken: string
@@ -58,4 +59,34 @@ export interface Config {
   testTimeoutMs: number
   testRetryCount: number
   alwaysNotify: boolean
+  webhookEnabled: boolean
+  webhookPort: number
+  webhookSecret: string
+  repoPath: string
+}
+
+// Webhook types
+export interface WebhookPayload {
+  ref: string
+  repository: {
+    name: string
+    full_name: string
+    owner: {
+      name: string
+      login: string
+    }
+  }
+  pusher: {
+    name: string
+    email: string
+  }
+  commits: Array<{
+    id: string
+    message: string
+    timestamp: string
+    author: {
+      name: string
+      email: string
+    }
+  }>
 }
