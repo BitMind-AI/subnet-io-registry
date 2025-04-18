@@ -103,17 +103,21 @@ export async function executeTest(
         // Handle different request methods
         if (endpoint.method.toUpperCase() === 'GET') {
           // For GET requests, send data as query parameters
-          // Convert the data object to URLSearchParams
-          const params = new URLSearchParams()
+          axiosConfig.params = {}
+
+          // Handle each key-value pair in the data object
           for (const [key, value] of Object.entries(data)) {
-            params.append(key, String(value))
+            // Special handling for arrays - create multiple params with the same key
+            if (Array.isArray(value)) {
+              // For arrays, add each element as a separate parameter with the same key
+              axiosConfig.params[key] = value
+            } else {
+              // For non-arrays, add as a single parameter
+              axiosConfig.params[key] = String(value)
+            }
           }
 
-          // Use the URLSearchParams object for the query parameters
-          axiosConfig.params = {}
-          for (const [key, value] of params.entries()) {
-            axiosConfig.params[key] = value
-          }
+          // Debug logging removed
         } else if (isMultipart) {
           // For multipart/form-data, use the form data object directly
           axiosConfig.data = data
