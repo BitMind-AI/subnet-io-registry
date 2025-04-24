@@ -14,7 +14,15 @@ endpoints:
       properties:
         model:
           type: string
-          default: llama-3
+          default: llama-3-1-8b
+          enum: [
+            "llama-3-1-8b",
+            "llama-3-1-70b",
+            "cortext-ultra",
+            "gpt-4o",
+            "claude-3-5-sonnet-20241022"
+          ]
+          description: "Model used for the chat"
         messages:
           type: array
           items:

@@ -1,5 +1,5 @@
 {
-  "model": "llama-3",
+  "model": "llama-3-1-8b",
   "messages": [
     {
       "role": "user",
