@@ -159,11 +159,25 @@ export function findBinaryFile(
 
 /**
  * Generate test cases for all subnets and endpoints
+ * @param specificSubnetId Optional subnet ID to test only a specific subnet
  */
-export function generateTestCases(): TestCase[] {
+export function generateTestCases(specificSubnetId?: string): TestCase[] {
   const testCases: TestCase[] = []
 
-  for (const subnetId of getAvailableSubnets()) {
+  // Get subnets to test - either all available or just the specified one
+  const subnetsToTest = specificSubnetId
+    ? [specificSubnetId].filter((id) => getAvailableSubnets().includes(id))
+    : getAvailableSubnets()
+
+  // If a specific subnet was requested but not found, log a warning
+  if (specificSubnetId && subnetsToTest.length === 0) {
+    console.warn(
+      `Warning: Subnet ${specificSubnetId} not found or has no API definition.`
+    )
+    return []
+  }
+
+  for (const subnetId of subnetsToTest) {
     try {
       const apiDef = loadSubnetApi(subnetId)
 

@@ -9,10 +9,12 @@ import { startWebhookServer } from './webhook'
  * Main function to run tests and send notifications
  * @param isDetailedReport Whether to generate a detailed report
  * @param skipSlack Whether to skip sending Slack notifications
+ * @param subnetId Optional subnet ID to test only a specific subnet
  */
 async function main(
   isDetailedReport: boolean = false,
-  skipSlack: boolean = false
+  skipSlack: boolean = false,
+  subnetId?: string
 ) {
   try {
     console.log('Loading configuration...')
@@ -20,8 +22,12 @@ async function main(
     validateConfig(config)
 
     console.log('Generating test cases...')
-    const testCases = generateTestCases()
-    console.log(`Generated ${testCases.length} test cases`)
+    const testCases = generateTestCases(subnetId)
+    console.log(
+      `Generated ${testCases.length} test cases${
+        subnetId ? ` for subnet ${subnetId}` : ''
+      }`
+    )
 
     console.log('Running tests...')
     const results = await runTests(testCases, config)
@@ -83,12 +89,21 @@ if (require.main === module) {
     const runDetailedReport = process.argv.includes('--detailed')
     const skipSlack = process.argv.includes('--skip-slack')
 
+    // Check for subnet flag
+    const subnetArgIndex = process.argv.findIndex((arg) => arg === '--subnet')
+    const subnetId =
+      subnetArgIndex !== -1 && subnetArgIndex < process.argv.length - 1
+        ? process.argv[subnetArgIndex + 1]
+        : undefined
+
     console.log(
       `Running tests immediately with ${
         runDetailedReport ? 'detailed' : 'standard'
-      } report...${skipSlack ? ' (Slack notifications disabled)' : ''}`
+      } report...${skipSlack ? ' (Slack notifications disabled)' : ''}${
+        subnetId ? ` for subnet ${subnetId}` : ''
+      }`
     )
-    main(runDetailedReport, skipSlack)
+    main(runDetailedReport, skipSlack, subnetId)
   } else {
     // Check for skip-slack flag in scheduled runs
     const skipSlack = process.argv.includes('--skip-slack')
