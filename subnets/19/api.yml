@@ -265,8 +265,4 @@ endpoints:
             [
               "https://lastfm.freetls.fastly.net/i/u/770x0/443c5e1c35fd38bb5a49a7d00612dab3.jpg#443c5e1c35fd38bb5a49a7d00612dab3",
             ]
-        model:
-          type: string
-          enum: ["dataautogpt3/ProteusV0.4-Lightning"]
-          default: "dataautogpt3/ProteusV0.4-Lightning"
-      required: [prompt, init_image, model]
+      required: [prompt, init_image]
