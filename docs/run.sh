@@ -2,7 +2,12 @@
 
 # Regenerate OpenAPI documentation using Python
 echo "Regenerating OpenAPI documentation..."
-python generate_openapi.py
+# Try python3 first, fall back to python if not available
+if command -v python3 &>/dev/null; then
+    python3 generate_openapi.py
+else
+    python generate_openapi.py
+fi
 
 # Check if container exists and remove it
 if [ "$(docker ps -a -q -f name=subnet-io-registry-swagger)" ]; then
