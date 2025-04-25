@@ -9,10 +9,12 @@ import { startWebhookServer } from './webhook'
  * Main function to run tests and send notifications
  * @param isDetailedReport Whether to generate a detailed report
  * @param skipSlack Whether to skip sending Slack notifications
+ * @param subnetId Optional subnet ID to test only a specific subnet
  */
 async function main(
   isDetailedReport: boolean = false,
-  skipSlack: boolean = false
+  skipSlack: boolean = false,
+  subnetId?: string
 ) {
   try {
     console.log('Loading configuration...')
@@ -20,8 +22,12 @@ async function main(
     validateConfig(config)
 
     console.log('Generating test cases...')
-    const testCases = generateTestCases()
-    console.log(`Generated ${testCases.length} test cases`)
+    const testCases = generateTestCases(subnetId)
+    console.log(
+      `Generated ${testCases.length} test cases${
+        subnetId ? ` for subnet ${subnetId}` : ''
+      }`
+    )
 
     console.log('Running tests...')
     const results = await runTests(testCases, config)
@@ -83,12 +89,21 @@ if (require.main === module) {
     const runDetailedReport = process.argv.includes('--detailed')
     const skipSlack = process.argv.includes('--skip-slack')
 
+    // Check for subnet flag
+    const subnetArgIndex = process.argv.findIndex((arg) => arg === '--subnet')
+    const subnetId =
+      subnetArgIndex !== -1 && subnetArgIndex < process.argv.length - 1
+        ? process.argv[subnetArgIndex + 1]
+        : undefined
+
     console.log(
       `Running tests immediately with ${
         runDetailedReport ? 'detailed' : 'standard'
-      } report...${skipSlack ? ' (Slack notifications disabled)' : ''}`
+      } report...${skipSlack ? ' (Slack notifications disabled)' : ''}${
+        subnetId ? ` for subnet ${subnetId}` : ''
+      }`
     )
-    main(runDetailedReport, skipSlack)
+    main(runDetailedReport, skipSlack, subnetId)
   } else {
     // Check for skip-slack flag in scheduled runs
     const skipSlack = process.argv.includes('--skip-slack')
@@ -96,7 +111,46 @@ if (require.main === module) {
     // Schedule regular tests
     console.log(`Scheduling regular tests with cron: ${config.testSchedule}`)
     cron.schedule(config.testSchedule, () => {
-      console.log(`Running scheduled tests at ${new Date().toISOString()}`)
+      const now = new Date()
+
+      // Get the current time components
+      const minute = now.getMinutes()
+      const hour = now.getHours()
+      const dayOfMonth = now.getDate()
+      const month = now.getMonth() + 1 // getMonth() returns 0-11
+      const dayOfWeek = now.getDay() // getDay() returns 0-6 (Sunday-Saturday)
+
+      // Parse the detailed report schedule
+      const detailedParts = config.detailedReportSchedule.split(' ')
+
+      // Simple check if the current time matches the detailed report schedule
+      // This is a basic implementation and doesn't handle all cron features
+      const minuteMatch =
+        detailedParts[0] === '*' || detailedParts[0] === String(minute)
+      const hourMatch =
+        detailedParts[1] === '*' || detailedParts[1] === String(hour)
+      const dayOfMonthMatch =
+        detailedParts[2] === '*' || detailedParts[2] === String(dayOfMonth)
+      const monthMatch =
+        detailedParts[3] === '*' || detailedParts[3] === String(month)
+      const dayOfWeekMatch =
+        detailedParts[4] === '*' || detailedParts[4] === String(dayOfWeek)
+
+      // If all components match, the detailed report would run now
+      if (
+        minuteMatch &&
+        hourMatch &&
+        dayOfMonthMatch &&
+        monthMatch &&
+        dayOfWeekMatch
+      ) {
+        console.log(
+          `Skipping regular tests at ${now.toISOString()} because detailed report is also scheduled`
+        )
+        return
+      }
+
+      console.log(`Running scheduled tests at ${now.toISOString()}`)
       main(false, skipSlack)
     })
 

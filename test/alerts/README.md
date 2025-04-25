@@ -83,6 +83,7 @@ npm run now                     # Run tests immediately
 npm run now:detailed            # Run with detailed report
 npm run now:skip-slack          # Run without sending Slack notifications
 npm run now:detailed:skip-slack # Run detailed report without Slack
+npm run now -- --subnet 1       # Run tests for a specific subnet (e.g., subnet 1)
 
 # Run the compiled service directly without PM2/nohup
 npm run start:dev
@@ -92,6 +93,7 @@ npm run start:dev -- --now                     # Run tests immediately
 npm run start:dev -- --now --detailed          # Run with detailed report
 npm run start:dev -- --now --skip-slack        # Run without sending Slack notifications
 npm run start:dev -- --now --detailed --skip-slack  # Run detailed report without Slack
+npm run start:dev -- --now --subnet 1          # Run tests for a specific subnet (e.g., subnet 1)
 
 # Start only the webhook server
 npm run start:webhook

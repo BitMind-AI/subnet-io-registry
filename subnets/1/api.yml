@@ -15,6 +15,17 @@ endpoints:
         model:
           type: string
           default: llama-3
+          enum: [
+            "llama-3",
+            "llama-3-1-8b",
+            "llama-3-2-3b",
+            "llama-3-1-70b",
+            "mixtral-8x7b",
+            "deepseek-r1-qwen-32b",
+            "Qwen/QwQ-32B",
+            "qwen-2-5-7b"
+          ]
+          description: "Model used for the chat"
         messages:
           type: array
           items:

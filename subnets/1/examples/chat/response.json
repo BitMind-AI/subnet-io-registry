@@ -2,7 +2,7 @@
   "id": "chatcmpl-CgPOAiO6T9KfqiizhxTJpQ",
   "object": "chat.completion",
   "created": 1739377986,
-  "model": "llama-3-1-70b",
+  "model": "llama-3",
   "choices": [
     {
       "message": {
