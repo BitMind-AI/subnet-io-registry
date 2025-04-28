@@ -2,22 +2,6 @@
 
 This repository serves as a central registry for Bittensor subnet API definitions used by the BitMind Intelligence Oracle.
 
-## Structure
-
-The repository is organized as follows:
-
-```
-subnet-io-registry/
-├── subnets/              # Directory containing subnet definitions
-│   ├── 1/                # Subnet ID directories (Bittensor subnet UIDs)
-│   │   ├── api.yml       # API definition for subnet 1
-│   │   └── examples/     # Example requests/responses
-│   ├── 4/
-│   ├── 19/
-│   └── ...
-└── docs/                # Documentation and tools
-```
-
 ## Adding a New Subnet
 
 **NOTE:** Subnets must have a public API endpoint that can be accessed by the BitMind Intelligence Oracle.
