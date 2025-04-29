@@ -1,4 +1,6 @@
 baseUrl: "https://apis.datura.ai"
+name: "Search"
+description: "Search across multiple data sources with AI-powered summarization."
 endpoints:
   - path: /search
     externalPath: /desearch/ai/search

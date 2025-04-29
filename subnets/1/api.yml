@@ -1,4 +1,6 @@
 baseUrl: "https://api.corcel.io/v1"
+name: "Standard Chat"
+description: "Basic chat completion endpoint using standard language models."
 endpoints:
   - path: /chat
     externalPath: /chat/completions
@@ -15,16 +17,17 @@ endpoints:
         model:
           type: string
           default: llama-3
-          enum: [
-            "llama-3",
-            "llama-3-1-8b",
-            "llama-3-2-3b",
-            "llama-3-1-70b",
-            "mixtral-8x7b",
-            "deepseek-r1-qwen-32b",
-            "Qwen/QwQ-32B",
-            "qwen-2-5-7b"
-          ]
+          enum:
+            [
+              "llama-3",
+              "llama-3-1-8b",
+              "llama-3-2-3b",
+              "llama-3-1-70b",
+              "mixtral-8x7b",
+              "deepseek-r1-qwen-32b",
+              "Qwen/QwQ-32B",
+              "qwen-2-5-7b",
+            ]
           description: "Model used for the chat"
         messages:
           type: array
@@ -33,10 +36,10 @@ endpoints:
             properties:
               role:
                 type: string
-                enum: [ user, assistant, system ]
+                enum: [user, assistant, system]
               content:
                 type: string
-            required: [ role, content ]
+            required: [role, content]
         temperature:
           type: number
           default: 0.1
@@ -52,4 +55,4 @@ endpoints:
         logprobs:
           type: boolean
           default: false
-      required: [ model, messages ]
+      required: [model, messages]

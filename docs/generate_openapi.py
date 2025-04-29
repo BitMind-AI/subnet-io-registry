@@ -18,6 +18,7 @@ def generate_openapi(api_definitions_path, output_file):
                     {"url": "http://localhost:3000/prod/oracle/v1"},
                     {"url": "http://localhost:3000/staging/oracle/v1"}],
         "paths": {},
+        "tags": [],  # Add tags array for grouping
         "components": {
             "securitySchemes": {
                 "bearerAuth": {
@@ -48,7 +49,34 @@ def generate_openapi(api_definitions_path, output_file):
                 if prop_details.get('type') == 'boolean' and 'example' not in prop_details and 'default' not in prop_details:
                     prop_details['default'] = False
 
-        return schema
+    # Helper function to fix numeric constraints
+    def fix_numeric_constraints(schema):
+        if schema and schema.get("properties"):
+            for prop_name, prop_details in schema["properties"].items():
+                if "properties" in prop_details:
+                    fix_numeric_constraints(prop_details)
+                
+                # Fix exclusiveMinimum/exclusiveMaximum
+                if "exclusiveMinimum" in prop_details and isinstance(prop_details["exclusiveMinimum"], (int, float)):
+                    prop_details["minimum"] = prop_details["exclusiveMinimum"]
+                    prop_details["exclusiveMinimum"] = True
+                
+                if "exclusiveMaximum" in prop_details and isinstance(prop_details["exclusiveMaximum"], (int, float)):
+                    prop_details["maximum"] = prop_details["exclusiveMaximum"]
+                    prop_details["exclusiveMaximum"] = True
+
+    # Helper function to move examples to schema level
+    def move_examples_to_schema(schema):
+        if schema and schema.get("properties"):
+            for prop_name, prop_details in schema["properties"].items():
+                if "properties" in prop_details:
+                    move_examples_to_schema(prop_details)
+                
+                # Move examples to schema level
+                if "examples" in prop_details:
+                    if "example" not in prop_details:
+                        prop_details["example"] = prop_details["examples"][0]
+                    del prop_details["examples"]
 
     # Generate possible directory names for an endpoint path
     def get_possible_directory_names(endpoint_path):
@@ -84,201 +112,156 @@ def generate_openapi(api_definitions_path, output_file):
         
         return None
 
-    # Collect paths first, then sort
-    all_paths = {}
-    for root, _, files in os.walk(api_definitions_path):
-        # Extract the subnet ID from the directory path.
-        subnet_id = os.path.basename(root)
-        if not subnet_id.isdigit():  # Skip if not a digit folder
+    def process_schema(schema, examples=None):
+        if not schema:
+            return None
+        
+        def fix_schema_node(node):
+            if isinstance(node, dict):
+                # Fix file type to string with binary format
+                if node.get("type") == "file":
+                    node["type"] = "string"
+                    node["format"] = "binary"
+                
+                # Move examples to example
+                if "examples" in node:
+                    if isinstance(node["examples"], list) and node["examples"]:
+                        node["example"] = node["examples"][0]
+                    del node["examples"]
+                
+                # Recursively process all properties
+                for key, value in node.items():
+                    if isinstance(value, (dict, list)):
+                        fix_schema_node(value)
+            elif isinstance(node, list):
+                for item in node:
+                    if isinstance(item, (dict, list)):
+                        fix_schema_node(item)
+        
+        # Apply all fixes
+        fix_schema_node(schema)
+        fix_numeric_constraints(schema)
+        add_defaults_to_schema(schema)
+        
+        # Add examples if provided
+        if examples:
+            schema["example"] = examples
+        
+        return schema
+
+    # First pass: collect subnet information and create tags
+    subnet_info = {}
+    for subnet_dir in sorted(os.listdir(api_definitions_path)):
+        if not subnet_dir.isdigit():
             continue
+            
+        subnet_path = os.path.join(api_definitions_path, subnet_dir)
+        if not os.path.isdir(subnet_path):
+            continue
+            
+        api_file = os.path.join(subnet_path, "api.yml")
+        if not os.path.exists(api_file):
+            continue
+            
+        with open(api_file, 'r') as f:
+            api_def = yaml.safe_load(f)
+            
+        base_url = api_def.get('baseUrl', '')
+        name = api_def.get('name', f'Subnet {subnet_dir}')
+        description = api_def.get('description', f'API endpoints for subnet {subnet_dir} ({base_url})')
+        
+        # Create tag for this subnet
+        tag = {
+            "name": name,
+            "description": description
+        }
+        openapi["tags"].append(tag)
+        subnet_info[subnet_dir] = {
+            "base_url": base_url,
+            "name": name
+        }
 
-        for file in files:
-            if file.endswith(".yml") or file.endswith(".yaml"):
-                file_path = os.path.join(root, file)
-                try:
-                    with open(file_path, "r") as f:
-                        data = yaml.safe_load(f)
+    # Process each API definition
+    for subnet_dir in sorted(os.listdir(api_definitions_path)):
+        if not subnet_dir.isdigit():
+            continue
+            
+        subnet_path = os.path.join(api_definitions_path, subnet_dir)
+        if not os.path.isdir(subnet_path):
+            continue
+            
+        api_file = os.path.join(subnet_path, "api.yml")
+        if not os.path.exists(api_file):
+            continue
+            
+        with open(api_file, 'r') as f:
+            api_def = yaml.safe_load(f)
+            
+        base_url = api_def.get('baseUrl', '')
+        name = api_def.get('name', f'Subnet {subnet_dir}')
+        
+        for endpoint in api_def.get('endpoints', []):
+            path = endpoint.get('path', '')
+            method = endpoint.get('method', '').lower()
+            external_path = endpoint.get('externalPath', path)
+            
+            # Load examples if they exist
+            request_example = load_example_file(subnet_dir, external_path, 'request')
+            response_example = load_example_file(subnet_dir, external_path, 'response')
+            
+            # Process request schema
+            request_schema = process_schema(endpoint.get('requestSchema'), request_example)
+            
+            # Process response schema
+            response_schema = process_schema(endpoint.get('responseSchema'), response_example)
+            
+            # Create path entry
+            path_entry = {
+                method: {
+                    "tags": [name],  # Use the subnet name as the tag
+                    "summary": f"{method.upper()} {path}",
+                    "description": endpoint.get('description', '')
+                }
+            }
+            
+            # Only add requestBody for non-GET methods
+            if method.lower() != "get" and request_schema:
+                path_entry[method]["requestBody"] = {
+                    "required": True,
+                    "content": {
+                        "application/json": {
+                            "schema": request_schema
+                        }
+                    }
+                }
+            
+            # Add responses
+            path_entry[method]["responses"] = {
+                "200": {
+                    "description": "Successful response",
+                    "content": {
+                        "application/json": {
+                            "schema": response_schema
+                        }
+                    }
+                } if response_schema else {
+                    "description": "Successful response"
+                }
+            }
+            
+            # Add to paths
+            full_path = f"/{subnet_dir}{path}"
+            if full_path in openapi["paths"]:
+                openapi["paths"][full_path].update(path_entry)
+            else:
+                openapi["paths"][full_path] = path_entry
 
-                        if "endpoints" in data:
-                            for endpoint in data["endpoints"]:
-                                path = f"/{subnet_id}{endpoint['path']}"  # Prepend subnetId to path
-                                endpoint_path = endpoint['path']
-                                method = endpoint["method"].lower()
-                                summary = endpoint.get("summary", f"{method.upper()} {path}")
-                                description = endpoint.get("description", "")
-                                request_body_schema = endpoint.get("requestSchema")
-
-                                # Add default values
-                                if request_body_schema:
-                                    request_body_schema = add_defaults_to_schema(request_body_schema)
-
-                                # Get content type from headers or default to application/json
-                                content_type = endpoint.get("headers", {}).get("Content-Type", "application/json")
-                                
-                                # Try to load example request and response
-                                request_example = None
-                                response_example = None
-                                
-                                # Load examples using the load_example_file function
-                                request_example = load_example_file(subnet_id, endpoint_path, "request")
-                                response_example = load_example_file(subnet_id, endpoint_path, "response")
-                                
-                                # Handle different content types appropriately
-                                if content_type == "multipart/form-data" and request_body_schema:
-                                    # For multipart/form-data, handle file uploads correctly
-                                    # Transform properties with type: file to binary format
-                                    form_schema = {
-                                        "type": "object",
-                                        "properties": {},
-                                        "required": request_body_schema.get("required", [])
-                                    }
-                                    
-                                    for prop_name, prop_details in request_body_schema.get("properties", {}).items():
-                                        if prop_details.get("type") == "file":
-                                            # For file uploads, use binary format
-                                            form_schema["properties"][prop_name] = {
-                                                "type": "string",
-                                                "format": "binary",
-                                                "description": prop_details.get("description", "")
-                                            }
-                                        else:
-                                            # For non-file properties
-                                            form_schema["properties"][prop_name] = prop_details
-                                    
-                                    request_body = {
-                                        "required": True,
-                                        "content": {
-                                            "multipart/form-data": {
-                                                "schema": form_schema
-                                            }
-                                        }
-                                    }
-                                    
-                                    # Add example if available
-                                    if request_example:
-                                        request_body["content"]["multipart/form-data"]["example"] = request_example
-                                else:
-                                    # Default case for application/json
-                                    request_body = {
-                                        "required": True,
-                                        "content": {
-                                            content_type: {
-                                                "schema": request_body_schema
-                                            }
-                                        }
-                                    } if request_body_schema else None
-                                    
-                                    # Add example if available
-                                    if request_example and request_body:
-                                        request_body["content"][content_type]["example"] = request_example
-
-                                # Create responses object with example if available
-                                responses = {
-                                    "200": {
-                                        "description": "Successful response"
-                                    }
-                                }
-                                
-                                # Add response example if available
-                                if response_example:
-                                    responses["200"]["content"] = {
-                                        "application/json": {
-                                            "example": response_example
-                                        }
-                                    }
-
-                                # Handle query parameters for GET requests and others that use them
-                                parameters = []
-                                if endpoint.get("queryParams"):
-                                    for param in endpoint.get("queryParams"):
-                                        param_obj = {
-                                            "name": param.get("name"),
-                                            "in": "query",
-                                            "description": param.get("description", ""),
-                                            "required": param.get("required", False)
-                                        }
-                                        
-                                        # Set schema type based on param type
-                                        param_type = param.get("type", "string")
-                                        param_obj["schema"] = {"type": param_type}
-                                        
-                                        # Handle enum values
-                                        if "enum" in param:
-                                            param_obj["schema"]["enum"] = param["enum"]
-                                        
-                                        # Handle min/max values
-                                        if "minimum" in param:
-                                            param_obj["schema"]["minimum"] = param["minimum"]
-                                        if "maximum" in param:
-                                            param_obj["schema"]["maximum"] = param["maximum"]
-                                        
-                                        # Handle default values
-                                        if "default" in param:
-                                            param_obj["schema"]["default"] = param["default"]
-                                        
-                                        parameters.append(param_obj)
-                                
-                                # Handle path parameters
-                                if endpoint.get("pathParams"):
-                                    for param in endpoint.get("pathParams"):
-                                        param_obj = {
-                                            "name": param.get("name"),
-                                            "in": "path",
-                                            "description": param.get("description", ""),
-                                            "required": param.get("required", True),
-                                            "schema": {"type": param.get("type", "string")}
-                                        }
-                                        parameters.append(param_obj)
-                                
-                                # Create the endpoint object
-                                endpoint_obj = {
-                                    "summary": summary,
-                                    "description": description,
-                                    "responses": responses
-                                }
-                                
-                                # Add parameters if exist
-                                if parameters:
-                                    endpoint_obj["parameters"] = parameters
-                                
-                                # Add request body if exists
-                                if request_body:
-                                    endpoint_obj["requestBody"] = request_body
-                                
-                                # For GET requests with query parameters, add examples to parameters
-                                if method.lower() == "get" and endpoint.get("queryParams") and request_example:
-                                    # Update individual parameter examples
-                                    if isinstance(request_example, dict):
-                                        for param in endpoint_obj.get("parameters", []):
-                                            if param["name"] in request_example:
-                                                param["example"] = request_example[param["name"]]
-                                
-                                all_paths[path, method] = endpoint_obj
-                except yaml.YAMLError as e:
-                    print(f"Error reading YAML file {file_path}: {e}")
-
-    # Sort paths by subnet ID (numerically)
-    sorted_paths = sorted(all_paths.keys(), key=lambda x: int(x[0].split('/')[1]))
-
-    # Add the sorted paths to the openapi spec
-    for path_method in sorted_paths:
-        path, method = path_method
-        if path not in openapi["paths"]:
-            openapi["paths"][path] = {}
-        openapi["paths"][path][method] = all_paths[path_method]
-
-    return openapi
+    # Write the OpenAPI specification
+    with open(output_file, 'w') as f:
+        json.dump(openapi, f, indent=2)
 
 if __name__ == "__main__":
-    # Configuration
-    API_DEFINITIONS_PATH = "../subnets"  # Path to the subnets directory (relative to the project root)
-    OUTPUT_FILE = "./openapi.json"  # Path to save the openapi.json file (relative to the project root)
-
-    # Generate OpenAPI specification
-    openapi_spec = generate_openapi(API_DEFINITIONS_PATH, OUTPUT_FILE)
-
-    # Save to a file (or print to stdout)
-    with open(OUTPUT_FILE, "w") as f:
-        json.dump(openapi_spec, f, indent=2)
-
-    print(f"OpenAPI specification generated and saved to {OUTPUT_FILE}")
+    api_definitions_path = "../subnets"
+    output_file = "openapi.json"
+    generate_openapi(api_definitions_path, output_file)
+    print(f"OpenAPI specification generated and saved to {output_file}")

@@ -1,4 +1,7 @@
 baseUrl: "https://api.gogoagent.ai/v1"
+name: "Task Automation"
+slug: "20-task-automation"
+description: "Task automation with tool integration."
 endpoints:
   - path: /chat
     externalPath: /chat/completions
@@ -41,16 +44,5 @@ endpoints:
               arguments:
                 type: object
                 description: "Tool arguments schema"
-                additionalProperties:
-                  type: object
-                  properties:
-                    required:
-                      type: boolean
-                      description: "Whether this argument is required"
-                    type:
-                      type: string
-                      description: "Data type of the argument"
-                    description:
-                      type: string
-                      description: "Description of the argument"
+                additionalProperties: true
       required: [messages]

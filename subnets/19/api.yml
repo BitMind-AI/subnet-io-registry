@@ -1,4 +1,6 @@
 baseUrl: "https://api.nineteen.ai/v1"
+name: "Multimodal Chat"
+description: "Chat completion and image generation capabilities, including vision-enhanced chat and text-to-image generation."
 endpoints:
   - path: /chat/completions
     externalPath: /chat/completions
@@ -37,7 +39,14 @@ endpoints:
           description: "Max tokens for text generation"
         model:
           type: string
-          enum: ["unsloth/Llama-3.2-3B-Instruct", "Qwen/Qwen2.5-7B-Instruct", "casperhansen/deepseek-r1-distill-qwen-32b-awq", "TheBloke/Rogue-Rose-103b-v0.2-AWQ", "Qwen/QwQ-32B"]
+          enum:
+            [
+              "unsloth/Llama-3.2-3B-Instruct",
+              "Qwen/Qwen2.5-7B-Instruct",
+              "casperhansen/deepseek-r1-distill-qwen-32b-awq",
+              "TheBloke/Rogue-Rose-103b-v0.2-AWQ",
+              "Qwen/QwQ-32B",
+            ]
           default: "unsloth/Llama-3.2-3B-Instruct"
         top_p:
           type: number
@@ -78,7 +87,14 @@ endpoints:
           description: "Max tokens for text generation"
         model:
           type: string
-          enum: ["unsloth/Llama-3.2-3B-Instruct", "Qwen/Qwen2.5-7B-Instruct", "casperhansen/deepseek-r1-distill-qwen-32b-awq", "TheBloke/Rogue-Rose-103b-v0.2-AWQ", "Qwen/QwQ-32B"]
+          enum:
+            [
+              "unsloth/Llama-3.2-3B-Instruct",
+              "Qwen/Qwen2.5-7B-Instruct",
+              "casperhansen/deepseek-r1-distill-qwen-32b-awq",
+              "TheBloke/Rogue-Rose-103b-v0.2-AWQ",
+              "Qwen/QwQ-32B",
+            ]
           default: "unsloth/Llama-3.2-3B-Instruct"
         top_p:
           type: number
@@ -138,7 +154,12 @@ endpoints:
           description: "Height for image generation"
         model:
           type: string
-          enum: ["dataautogpt3/ProteusV0.4-Lightning", "black-forest-labs/FLUX.1-schnell", "Lykon/dreamshaper-xl-lightning"]
+          enum:
+            [
+              "dataautogpt3/ProteusV0.4-Lightning",
+              "black-forest-labs/FLUX.1-schnell",
+              "Lykon/dreamshaper-xl-lightning",
+            ]
           default: "dataautogpt3/ProteusV0.4-Lightning"
       required: [prompt, model]
 
@@ -194,7 +215,12 @@ endpoints:
           description: "Height for image generation"
         model:
           type: string
-          enum: ["dataautogpt3/ProteusV0.4-Lightning", "black-forest-labs/FLUX.1-schnell", "Lykon/dreamshaper-xl-lightning"]
+          enum:
+            [
+              "dataautogpt3/ProteusV0.4-Lightning",
+              "black-forest-labs/FLUX.1-schnell",
+              "Lykon/dreamshaper-xl-lightning",
+            ]
           default: "dataautogpt3/ProteusV0.4-Lightning"
         image_strength:
           type: number

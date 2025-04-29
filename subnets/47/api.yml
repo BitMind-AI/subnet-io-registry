@@ -1,4 +1,6 @@
 baseUrl: "https://api.condenses.ai/v1/api"
+name: "Condense Tokens"
+description: "Condense long text sequences of natural language tokens into soft tokens."
 endpoints:
   - path: /compress/text
     externalPath: /compress/text
@@ -25,7 +27,7 @@ endpoints:
           type: number
           description: "Performance parameter for compression"
           default: 0.1
-      required: [ text ]
+      required: [text]
 
   - path: /compress/messages
     externalPath: /compress/messages
@@ -52,14 +54,14 @@ endpoints:
             properties:
               role:
                 type: string
-                enum: [ "user", "assistant", "system" ]
+                enum: ["user", "assistant", "system"]
                 description: "Role of the message sender"
                 default: "user"
               content:
                 type: string
                 description: "Content of the message"
                 default: "Tell the user that they need to supply a proper message body"
-            required: [ role, content ]
+            required: [role, content]
         compress_user:
           type: boolean
           description: "Whether to compress user messages"
@@ -72,4 +74,4 @@ endpoints:
           type: number
           description: "Performance parameter for compression"
           default: 0.1
-      required: [ messages ]
+      required: [messages]
