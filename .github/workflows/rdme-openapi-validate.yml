@@ -17,7 +17,22 @@ jobs:
       - name: Check out repo 📚
         uses: actions/checkout@v4
 
+      - name: Set up Python 🐍
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies 📦
+        run: |
+          cd docs
+          pip install -r requirements.txt
+
+      - name: Generate OpenAPI documentation 📝
+        run: |
+          cd docs
+          python generate_openapi.py
+
       - name: Run `openapi:validate` command 🚀
         uses: readmeio/rdme@v10
         with:
-          rdme: openapi:validate docs/openapi.json
+          rdme: openapi:validate docs/openapi.json --key=${{ secrets.README_API_KEY }}
