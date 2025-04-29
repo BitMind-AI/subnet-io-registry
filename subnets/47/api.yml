@@ -1,5 +1,5 @@
 baseUrl: "https://api.condenses.ai/v1/api"
-name: "Condense Tokens"
+name: "Condense Tokens (Subnet 47)"
 description: "Condense long text sequences of natural language tokens into soft tokens."
 endpoints:
   - path: /compress/text

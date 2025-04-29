@@ -1,5 +1,5 @@
 baseUrl: "https://api.nineteen.ai/v1"
-name: "Multimodal Chat"
+name: "Multimodal Chat (Subnet 19)"
 description: "Chat completion and image generation capabilities, including vision-enhanced chat and text-to-image generation."
 endpoints:
   - path: /chat/completions

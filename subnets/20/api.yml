@@ -1,6 +1,5 @@
 baseUrl: "https://api.gogoagent.ai/v1"
-name: "Task Automation"
-slug: "20-task-automation"
+name: "Task Automation (Subnet 20)"
 description: "Task automation with tool integration."
 endpoints:
   - path: /chat

@@ -1,5 +1,5 @@
 baseUrl: "https://api.corcel.io/v1"
-name: "Standard Chat"
+name: "Standard Chat (Subnet 1)"
 description: "Basic chat completion endpoint using standard language models."
 endpoints:
   - path: /chat

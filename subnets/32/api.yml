@@ -1,5 +1,5 @@
 baseUrl: "https://api.its-ai.org/api"
-name: "Text Analysis"
+name: "Text Analysis (Subnet 32)"
 description: "Analyze text samples with AI detection capabilities."
 endpoints:
   - path: /detect-text

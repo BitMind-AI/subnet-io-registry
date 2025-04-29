@@ -1,5 +1,5 @@
 baseUrl: "https://llm.chutes.ai/v1"
-name: "Serverless Computing"
+name: "Serverless Computing (Subnet 64)"
 description: "Run high-performance models like DeepSeek on serverless infrastructure."
 endpoints:
   - path: /chat/completions
