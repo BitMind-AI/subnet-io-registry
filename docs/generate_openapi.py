@@ -101,9 +101,21 @@ def generate_openapi(api_definitions_path, output_file):
 
                         if "endpoints" in data:
                             for endpoint in data["endpoints"]:
-                                path = f"/{subnet_id}{endpoint['path']}"  # Prepend subnetId to path
                                 endpoint_path = endpoint['path']
                                 method = endpoint["method"].lower()
+                                
+                                # Handle path parameters in the path
+                                path_with_params = f"/{subnet_id}{endpoint_path}"
+                                if endpoint.get("pathParams"):
+                                    # If the endpoint has path parameters, modify the path to include them
+                                    for param in endpoint.get("pathParams"):
+                                        param_name = param.get("name")
+                                        # If the external path contains this parameter in {param} format
+                                        if "{" + param_name + "}" in endpoint.get("externalPath", ""):
+                                            # Add the parameter to the path
+                                            path_with_params = f"/{subnet_id}{endpoint_path}/{{{param_name}}}"
+                                
+                                path = path_with_params
                                 summary = endpoint.get("summary", f"{method.upper()} {path}")
                                 description = endpoint.get("description", "")
                                 request_body_schema = endpoint.get("requestSchema")
