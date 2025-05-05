@@ -1,4 +1,6 @@
 baseUrl: "https://api.its-ai.org/api"
+name: "Text Analysis (Subnet 32)"
+description: "Analyze text samples with AI detection capabilities."
 endpoints:
   - path: /detect-text
     externalPath: /text
@@ -15,7 +17,7 @@ endpoints:
         text:
           type: string
           description: The text to be analyzed for AI-generated content.
-        deep_scan: 
+        deep_scan:
           type: boolean
           default: false
-      required: [ text ]
+      required: [text]
