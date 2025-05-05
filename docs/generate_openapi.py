@@ -112,42 +112,190 @@ def generate_openapi(api_definitions_path, output_file):
         
         return None
 
-    def process_schema(schema, examples=None):
-        if not schema:
-            return None
-        
-        def fix_schema_node(node):
-            if isinstance(node, dict):
-                # Fix file type to string with binary format
-                if node.get("type") == "file":
-                    node["type"] = "string"
-                    node["format"] = "binary"
-                
-                # Move examples to example
-                if "examples" in node:
-                    if isinstance(node["examples"], list) and node["examples"]:
-                        node["example"] = node["examples"][0]
-                    del node["examples"]
-                
-                # Recursively process all properties
-                for key, value in node.items():
-                    if isinstance(value, (dict, list)):
-                        fix_schema_node(value)
-            elif isinstance(node, list):
-                for item in node:
-                    if isinstance(item, (dict, list)):
-                        fix_schema_node(item)
-        
-        # Apply all fixes
-        fix_schema_node(schema)
-        fix_numeric_constraints(schema)
-        add_defaults_to_schema(schema)
-        
-        # Add examples if provided
-        if examples:
-            schema["example"] = examples
-        
-        return schema
+    # Collect paths first, then sort
+    all_paths = {}
+    for root, _, files in os.walk(api_definitions_path):
+        # Extract the subnet ID from the directory path.
+        subnet_id = os.path.basename(root)
+        if not subnet_id.isdigit():  # Skip if not a digit folder
+            continue
+
+        for file in files:
+            if file.endswith(".yml") or file.endswith(".yaml"):
+                file_path = os.path.join(root, file)
+                try:
+                    with open(file_path, "r") as f:
+                        data = yaml.safe_load(f)
+
+                        if "endpoints" in data:
+                            for endpoint in data["endpoints"]:
+                                endpoint_path = endpoint['path']
+                                method = endpoint["method"].lower()
+                                
+                                # Handle path parameters in the path
+                                path_with_params = f"/{subnet_id}{endpoint_path}"
+                                if endpoint.get("pathParams"):
+                                    # If the endpoint has path parameters, modify the path to include them
+                                    for param in endpoint.get("pathParams"):
+                                        param_name = param.get("name")
+                                        # If the external path contains this parameter in {param} format
+                                        if "{" + param_name + "}" in endpoint.get("externalPath", ""):
+                                            # Add the parameter to the path
+                                            path_with_params = f"/{subnet_id}{endpoint_path}/{{{param_name}}}"
+                                
+                                path = path_with_params
+                                summary = endpoint.get("summary", f"{method.upper()} {path}")
+                                description = endpoint.get("description", "")
+                                request_body_schema = endpoint.get("requestSchema")
+
+                                # Add default values
+                                if request_body_schema:
+                                    request_body_schema = add_defaults_to_schema(request_body_schema)
+
+                                # Get content type from headers or default to application/json
+                                content_type = endpoint.get("headers", {}).get("Content-Type", "application/json")
+                                
+                                # Try to load example request and response
+                                request_example = None
+                                response_example = None
+                                
+                                # Load examples using the load_example_file function
+                                request_example = load_example_file(subnet_id, endpoint_path, "request")
+                                response_example = load_example_file(subnet_id, endpoint_path, "response")
+                                
+                                # Handle different content types appropriately
+                                if content_type == "multipart/form-data" and request_body_schema:
+                                    # For multipart/form-data, handle file uploads correctly
+                                    # Transform properties with type: file to binary format
+                                    form_schema = {
+                                        "type": "object",
+                                        "properties": {},
+                                        "required": request_body_schema.get("required", [])
+                                    }
+                                    
+                                    for prop_name, prop_details in request_body_schema.get("properties", {}).items():
+                                        if prop_details.get("type") == "file":
+                                            # For file uploads, use binary format
+                                            form_schema["properties"][prop_name] = {
+                                                "type": "string",
+                                                "format": "binary",
+                                                "description": prop_details.get("description", "")
+                                            }
+                                        else:
+                                            # For non-file properties
+                                            form_schema["properties"][prop_name] = prop_details
+                                    
+                                    request_body = {
+                                        "required": True,
+                                        "content": {
+                                            "multipart/form-data": {
+                                                "schema": form_schema
+                                            }
+                                        }
+                                    }
+                                    
+                                    # Add example if available
+                                    if request_example:
+                                        request_body["content"]["multipart/form-data"]["example"] = request_example
+                                else:
+                                    # Default case for application/json
+                                    request_body = {
+                                        "required": True,
+                                        "content": {
+                                            content_type: {
+                                                "schema": request_body_schema
+                                            }
+                                        }
+                                    } if request_body_schema else None
+                                    
+                                    # Add example if available
+                                    if request_example and request_body:
+                                        request_body["content"][content_type]["example"] = request_example
+
+                                # Create responses object with example if available
+                                responses = {
+                                    "200": {
+                                        "description": "Successful response"
+                                    }
+                                }
+                                
+                                # Add response example if available
+                                if response_example:
+                                    responses["200"]["content"] = {
+                                        "application/json": {
+                                            "example": response_example
+                                        }
+                                    }
+
+                                # Handle query parameters for GET requests and others that use them
+                                parameters = []
+                                if endpoint.get("queryParams"):
+                                    for param in endpoint.get("queryParams"):
+                                        param_obj = {
+                                            "name": param.get("name"),
+                                            "in": "query",
+                                            "description": param.get("description", ""),
+                                            "required": param.get("required", False)
+                                        }
+                                        
+                                        # Set schema type based on param type
+                                        param_type = param.get("type", "string")
+                                        param_obj["schema"] = {"type": param_type}
+                                        
+                                        # Handle enum values
+                                        if "enum" in param:
+                                            param_obj["schema"]["enum"] = param["enum"]
+                                        
+                                        # Handle min/max values
+                                        if "minimum" in param:
+                                            param_obj["schema"]["minimum"] = param["minimum"]
+                                        if "maximum" in param:
+                                            param_obj["schema"]["maximum"] = param["maximum"]
+                                        
+                                        # Handle default values
+                                        if "default" in param:
+                                            param_obj["schema"]["default"] = param["default"]
+                                        
+                                        parameters.append(param_obj)
+                                
+                                # Handle path parameters
+                                if endpoint.get("pathParams"):
+                                    for param in endpoint.get("pathParams"):
+                                        param_obj = {
+                                            "name": param.get("name"),
+                                            "in": "path",
+                                            "description": param.get("description", ""),
+                                            "required": param.get("required", True),
+                                            "schema": {"type": param.get("type", "string")}
+                                        }
+                                        parameters.append(param_obj)
+                                
+                                # Create the endpoint object
+                                endpoint_obj = {
+                                    "summary": summary,
+                                    "description": description,
+                                    "responses": responses
+                                }
+                                
+                                # Add parameters if exist
+                                if parameters:
+                                    endpoint_obj["parameters"] = parameters
+                                
+                                # Add request body if exists
+                                if request_body:
+                                    endpoint_obj["requestBody"] = request_body
+                                
+                                # For GET requests with query parameters, add examples to parameters
+                                if method.lower() == "get" and endpoint.get("queryParams") and request_example:
+                                    # Update individual parameter examples
+                                    if isinstance(request_example, dict):
+                                        for param in endpoint_obj.get("parameters", []):
+                                            if param["name"] in request_example:
+                                                param["example"] = request_example[param["name"]]
+                                
+                                all_paths[path, method] = endpoint_obj
+                except yaml.YAMLError as e:
+                    print(f"Error reading YAML file {file_path}: {e}")
 
     # First pass: collect subnet information and create tags
     subnet_info = {}

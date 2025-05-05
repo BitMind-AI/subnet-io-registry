@@ -1,0 +1,48 @@
+baseUrl: "https://data.dev.masalabs.ai/api"
+endpoints:
+  - path: /search
+    externalPath: /v1/search/live/twitter
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "Bearer {{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        query:
+          type: string
+          description: "Twitter search query. Supports advanced operators like 'from:user', 'since:YYYY-MM-DD'"
+        max_results:
+          type: integer
+          description: "Maximum number of tweets to return (up to 100 per request)"
+          default: 100
+          minimum: 1
+          maximum: 100
+      required: [query]
+
+  - path: /status
+    externalPath: /v1/search/live/twitter/status/{jobUUID}
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "Bearer {{api-key}}"
+    pathParams:
+      - name: jobUUID
+        description: "UUID of the search job"
+        required: true
+
+  - path: /result
+    externalPath: /v1/search/live/twitter/result/{jobUUID}
+    method: GET
+    auth:
+      type: header
+      key: "Authorization"
+      value: "Bearer {{api-key}}"
+    pathParams:
+      - name: jobUUID
+        description: "UUID of the search job"
+        required: true
