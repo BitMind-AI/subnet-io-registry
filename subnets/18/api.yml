@@ -1,0 +1,27 @@
+baseUrl: "http://185.17.198.226:22026"
+endpoints:
+  - path: /predict
+    externalPath: /predictPointTemperature
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        lat:
+          type: number
+          description: "Latitude coordinate"
+        lon:
+          type: number
+          description: "Longitude coordinate"
+        start_timestamp:
+          type: number
+          description: "Start timestamp in Unix format"
+        end_timestamp:
+          type: number
+          description: "End timestamp in Unix format"
+      required: [lat, lon, start_timestamp, end_timestamp]
