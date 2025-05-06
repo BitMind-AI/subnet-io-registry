@@ -66,18 +66,17 @@ endpoints:
         startTime:
           type: number
           format: float
-          description: Starting point in seconds for extraction (default: 0)
+          description: Starting point in seconds for extraction (default 0).
         endTime:
           type: number
           format: float
-          description: Ending point in seconds for extraction (default: entire video)
+          description: Ending point in seconds for extraction (default entire video).
         fps:
-          type: number
-          format: integer
-          description: Frames per second to use for analysis (default: 24)
+          type: integer
+          description: Frames per second to use for analysis (default 24).
         rich:
           type: boolean
-          description: Whether to include detailed analysis in the response (default: false)
+          description: Whether to include detailed analysis in the response.
       required: [video]
     responseSchema:
       type: object
@@ -134,47 +133,44 @@ endpoints:
         startTime:
           type: number
           format: float
-          description: Starting point in seconds for extraction (default: 0)
+          description: Starting point in seconds for extraction (default 0).
         endTime:
           type: number
           format: float
-          description: Ending point in seconds for extraction (default: entire video)
+          description: Ending point in seconds for extraction (default entire video).
         fps:
-          type: number
-          format: integer
-          description: Frames per second to use for processing (default: 24)
+          type: integer
+          description: Frames per second to use for processing (default 24).
         generateThumbnails:
           type: boolean
-          description: Whether to generate thumbnail images (default: false)
+          description: Whether to generate thumbnail images (default false).
       required: [video]
     responseSchema:
       type: object
       properties:
         videoUrl:
           type: string
-          description: URL for the browser-compatible processed video
+          description: URL for the browser-compatible processed video.
         thumbnailUrls:
           type: array
           items:
             type: string
-          description: URLs for generated thumbnails (if requested)
+          description: URLs for generated thumbnails (if requested).
         metadata:
           type: object
           properties:
             duration:
               type: number
               format: float
-              description: Duration of the video in seconds
+              description: Duration of the video in seconds.
             width:
-              type: number
-              format: integer
-              description: Width of the video in pixels
+              type: integer
+              description: Width of the video in pixels.
             height:
-              type: number
-              format: integer
-              description: Height of the video in pixels
+              type: integer
+              description: Height of the video in pixels.
             fps:
               type: number
               format: float
-              description: Frames per second of the processed video
-          description: Video metadata information
+              description: Frames per second of the processed video.
+          description: Video metadata information.
