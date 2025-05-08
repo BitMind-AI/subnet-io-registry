@@ -3,6 +3,8 @@ endpoints:
   - path: /search
     externalPath: /v1/search/live/twitter
     method: POST
+    summary: "Initiate an asynchronous Twitter search job (Subnet 42)"
+    description: "Starts a job on Bittensor Subnet 42 to search Twitter based on a query (supports advanced operators). Returns a job UUID which can be used to check status and retrieve results later. Specify 'max_results' to limit tweet count."
     auth:
       type: header
       key: "Authorization"
@@ -12,20 +14,38 @@ endpoints:
     requestSchema:
       type: object
       properties:
-        query:
+        type:
           type: string
-          description: "Twitter search query. Supports advanced operators like 'from:user', 'since:YYYY-MM-DD'"
-        max_results:
-          type: integer
-          description: "Maximum number of tweets to return (up to 100 per request)"
-          default: 100
-          minimum: 1
-          maximum: 100
-      required: [query]
+          description: "Data source type. 'twitter-scraper' uses API or credentials, 'twitter-api-scraper' uses API only, 'twitter-credential-scraper' uses credentials only."
+          enum: ["twitter-scraper", "twitter-api-scraper", "twitter-credential-scraper"]
+          default: "twitter-scraper"
+        arguments:
+          type: object
+          description: "Arguments specific to the search type."
+          properties:
+            type:
+              type: string
+              description: "Search method: 'searchbyquery' for live tweets, 'searchbyfullarchive' for historical tweets."
+              enum: ["searchbyquery", "searchbyfullarchive"]
+              default: "searchbyquery"
+            query:
+              type: string
+              description: "Twitter search query. Supports advanced operators like 'from:user', 'since:YYYY-MM-DD'"
+              default: ""
+            max_results:
+              type: integer
+              description: "Maximum number of tweets to return (up to 100 for live, 500 for archive)"
+              default: 100 # Default for live search
+              minimum: 1
+              maximum: 500 # Max for archive search
+          required: [type, query] # Type and query required within arguments
+      required: [type, arguments] # Top-level type and arguments object are required
 
   - path: /status
     externalPath: /v1/search/live/twitter/status/{jobUUID}
     method: GET
+    summary: "Check the status of a Twitter search job (Subnet 42)"
+    description: "Retrieves the current status (e.g., pending, running, completed, failed) of an asynchronous Twitter search job initiated on Subnet 42, using the job's unique UUID."
     auth:
       type: header
       key: "Authorization"
@@ -38,6 +58,8 @@ endpoints:
   - path: /result
     externalPath: /v1/search/live/twitter/result/{jobUUID}
     method: GET
+    summary: "Get the results of a completed Twitter search job (Subnet 42)"
+    description: "Retrieves the collected tweets from a completed asynchronous Twitter search job on Subnet 42, using the job's unique UUID. Only works if the job status is 'completed'."
     auth:
       type: header
       key: "Authorization"

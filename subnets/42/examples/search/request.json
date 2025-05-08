@@ -1,4 +1,8 @@
 {
-  "query": "AI trending",
-  "max_results": 10
+  "type": "twitter-scraper",
+  "arguments": {
+    "type": "searchbyquery",
+    "query": "AI trending",
+    "max_results": 10
+  }
 }
