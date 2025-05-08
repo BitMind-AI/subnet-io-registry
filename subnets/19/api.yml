@@ -5,6 +5,8 @@ endpoints:
   - path: /chat/completions
     externalPath: /chat/completions
     method: POST
+    summary: "Chat with various AI models on Subnet 19"
+    description: "Engage in conversation with AI models from Bittensor Subnet 19. Suitable for Q&A, text generation, and general chat. Supports multiple models like Llama-3.2, Qwen, etc. (see 'model' parameter enum)."
     auth:
       type: header
       key: "Authorization"
@@ -63,6 +65,8 @@ endpoints:
   - path: /completions
     externalPath: /completions
     method: POST
+    summary: "Generate text completions using AI models from Subnet 19"
+    description: "Completes a given text prompt using various AI language models available on Bittensor Subnet 19. Useful for continuing stories, finishing sentences, or generating text based on an initial input. Supports multiple models (see 'model' parameter enum)."
     auth:
       type: header
       key: "Authorization"
@@ -111,6 +115,8 @@ endpoints:
   - path: /text-to-image
     externalPath: /text-to-image
     method: POST
+    summary: "Generate an image from a text description using Subnet 19 models"
+    description: "Creates an image based on a provided text prompt using AI image generation models from Bittensor Subnet 19. Allows specifying negative prompts, steps, dimensions, and model choice (e.g., Proteus, FLUX, Dreamshaper - see 'model' enum)."
     auth:
       type: header
       key: "Authorization"
@@ -166,6 +172,8 @@ endpoints:
   - path: /image-to-image
     externalPath: /image-to-image
     method: POST
+    summary: "Modify an existing image based on a text prompt using Subnet 19"
+    description: "Takes an initial image (via URL) and modifies it based on a text prompt using AI models from Bittensor Subnet 19. Control the strength of the modification with 'image_strength'. Supports various models (see 'model' enum)."
     auth:
       type: header
       key: "Authorization"
@@ -233,6 +241,8 @@ endpoints:
   - path: /avatar
     externalPath: /avatar
     method: POST
+    summary: "Generate a stylized avatar from an initial image using Subnet 19"
+    description: "Creates an avatar image based on an initial input image and a text prompt, using specialized AI models from Bittensor Subnet 19. Allows control over style strength using 'ipadapter_strength' and 'control_strength'."
     auth:
       type: header
       key: "Authorization"

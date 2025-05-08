@@ -5,6 +5,8 @@ endpoints:
   - path: /compress/text
     externalPath: /compress/text
     method: POST
+    summary: "Compress a block of text using Subnet 47"
+    description: "Reduces the token count of a given block of text using AI-powered compression from Bittensor Subnet 47. Useful for condensing information or reducing input size for other language models. Returns the compressed text and metadata about the compression."
     auth:
       type: header
       key: "Authorization"
@@ -32,6 +34,8 @@ endpoints:
   - path: /compress/messages
     externalPath: /compress/messages
     method: POST
+    summary: "Compress a conversation history (list of messages) using Subnet 47"
+    description: "Reduces the token count of a conversation history (provided as a list of messages with roles and content) using AI-powered compression from Bittensor Subnet 47. Can selectively compress user and/or assistant messages. Returns the compressed message list and metadata."
     auth:
       type: header
       key: "Authorization"
