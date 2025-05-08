@@ -5,6 +5,8 @@ endpoints:
   - path: /chat
     externalPath: /chat/completions
     method: POST
+    summary: "Perform tasks using AI agent with tool integration (Subnet 20)"
+    description: "Engages an AI agent from Bittensor Subnet 20 that can understand tasks and utilize provided tools to accomplish them. Pass a list of available tools (with names, descriptions, and argument schemas) in the 'tools' parameter along with the user's request in 'messages'. The agent will respond with the necessary tool calls or a final answer."
     auth:
       type: header
       key: "Authorization"
