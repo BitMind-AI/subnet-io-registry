@@ -67,6 +67,20 @@ endpoints:
             Video file uploaded as form data.
             - Max duration is limited by frame count (144 frames maximum, roughly 6 seconds at 24fps).
             - Supported formats: mp4, mov, avi.
+        startTime:
+          type: number
+          format: float
+          description: Starting point in seconds for extraction (default 0).
+        endTime:
+          type: number
+          format: float
+          description: Ending point in seconds for extraction (default entire video).
+        fps:
+          type: integer
+          description: Frames per second to use for analysis (default 24).
+        rich:
+          type: boolean
+          description: Whether to include detailed analysis in the response.
       required: [video]
     responseSchema:
       type: object
@@ -102,3 +116,65 @@ endpoints:
         fqdn:
           type: string
           description: Fully qualified domain name of the validator that generated the inference result.
+
+  - path: /preprocess-video
+    externalPath: /preprocess-video
+    method: POST
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: multipart/form-data
+    requestSchema:
+      type: object
+      properties:
+        video:
+          type: file
+          description: >
+            Video file uploaded as form data.
+            - Supported formats: mp4, mov, avi.
+        startTime:
+          type: number
+          format: float
+          description: Starting point in seconds for extraction (default 0).
+        endTime:
+          type: number
+          format: float
+          description: Ending point in seconds for extraction (default entire video).
+        fps:
+          type: integer
+          description: Frames per second to use for processing (default 24).
+        generateThumbnails:
+          type: boolean
+          description: Whether to generate thumbnail images (default false).
+      required: [video]
+    responseSchema:
+      type: object
+      properties:
+        videoUrl:
+          type: string
+          description: URL for the browser-compatible processed video.
+        thumbnailUrls:
+          type: array
+          items:
+            type: string
+          description: URLs for generated thumbnails (if requested).
+        metadata:
+          type: object
+          properties:
+            duration:
+              type: number
+              format: float
+              description: Duration of the video in seconds.
+            width:
+              type: integer
+              description: Width of the video in pixels.
+            height:
+              type: integer
+              description: Height of the video in pixels.
+            fps:
+              type: number
+              format: float
+              description: Frames per second of the processed video.
+          description: Video metadata information.
