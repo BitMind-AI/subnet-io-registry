@@ -5,7 +5,7 @@ endpoints:
   - path: /chat
     externalPath: /chat/completions
     method: POST
-    summary: "Engage in chat with various AI models on Subnet 1"
+    summary: "Engage in chat with various AI models"
     description: "Facilitates conversational interactions with AI models available on Bittensor Subnet 1. You can ask questions, request text generation, or have a general chat. This tool supports a variety of language models; please refer to the 'model' parameter options for a complete list of choices (default is 'llama-3')."
     auth:
       type: header

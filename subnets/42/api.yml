@@ -1,9 +1,11 @@
 baseUrl: "https://data.dev.masalabs.ai/api"
+name: "Real-Time Data (Subnet 42)"
+description: "Access real-time data from X/Twitter."
 endpoints:
   - path: /search
     externalPath: /v1/search/live/twitter
     method: POST
-    summary: "Initiate an asynchronous Twitter search job (Subnet 42)"
+    summary: "Initiate an asynchronous Twitter search job"
     description: "Starts a job on Bittensor Subnet 42 to search Twitter based on a query (supports advanced operators). Returns a job UUID which can be used to check status and retrieve results later. Specify 'max_results' to limit tweet count."
     auth:
       type: header
@@ -17,7 +19,12 @@ endpoints:
         type:
           type: string
           description: "Data source type. 'twitter-scraper' uses API or credentials, 'twitter-api-scraper' uses API only, 'twitter-credential-scraper' uses credentials only."
-          enum: ["twitter-scraper", "twitter-api-scraper", "twitter-credential-scraper"]
+          enum:
+            [
+              "twitter-scraper",
+              "twitter-api-scraper",
+              "twitter-credential-scraper",
+            ]
           default: "twitter-scraper"
         arguments:
           type: object
@@ -44,7 +51,7 @@ endpoints:
   - path: /status
     externalPath: /v1/search/live/twitter/status/{jobUUID}
     method: GET
-    summary: "Check the status of a Twitter search job (Subnet 42)"
+    summary: "Check the status of a Twitter search job"
     description: "Retrieves the current status (e.g., pending, running, completed, failed) of an asynchronous Twitter search job initiated on Subnet 42, using the job's unique UUID."
     auth:
       type: header
@@ -58,7 +65,7 @@ endpoints:
   - path: /result
     externalPath: /v1/search/live/twitter/result/{jobUUID}
     method: GET
-    summary: "Get the results of a completed Twitter search job (Subnet 42)"
+    summary: "Get the results of a completed Twitter search job"
     description: "Retrieves the collected tweets from a completed asynchronous Twitter search job on Subnet 42, using the job's unique UUID. Only works if the job status is 'completed'."
     auth:
       type: header
