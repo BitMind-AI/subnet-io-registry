@@ -5,6 +5,8 @@ endpoints:
   - path: /search
     externalPath: /desearch/ai/search
     method: POST
+    summary: "Perform AI-powered search across multiple sources (Subnet 22)"
+    description: "Conducts a search query across specified sources (web, hackernews, reddit, wikipedia, youtube, twitter, arxiv) using AI models from Subnet 22. Can filter by date and provide results as links only, links with summaries, or links with a final AI-generated summary."
     auth:
       type: header
       key: "Authorization"
@@ -70,6 +72,8 @@ endpoints:
   - path: /search/links/web
     externalPath: /desearch/ai/search/links/web
     method: POST
+    summary: "Search web sources (excluding Twitter) for links (Subnet 22)"
+    description: "Searches specified web-based sources (web, hackernews, reddit, wikipedia, youtube, arxiv) for a query and returns a list of relevant links. Does not include Twitter results. Uses AI models from Subnet 22."
     auth:
       type: header
       key: "Authorization"
@@ -99,6 +103,8 @@ endpoints:
   - path: /search/links/twitter
     externalPath: /desearch/ai/search/links/twitter
     method: POST
+    summary: "Search Twitter for links related to a query (Subnet 22)"
+    description: "Searches Twitter specifically for links relevant to a given query using AI models from Subnet 22."
     auth:
       type: header
       key: "Authorization"
@@ -121,6 +127,8 @@ endpoints:
   - path: /twitter
     externalPath: /twitter
     method: GET
+    summary: "Search Twitter for tweets matching a query (Subnet 22)"
+    description: "Searches Twitter for tweets based on a query string. Allows filtering by user, date range, language, verification status, media type, and engagement metrics (retweets, replies, likes). Supports advanced Twitter query syntax."
     auth:
       type: header
       key: "Authorization"
@@ -184,6 +192,8 @@ endpoints:
   - path: /twitter/urls
     externalPath: /twitter/urls
     method: GET
+    summary: "Fetch details for specific Twitter tweet URLs (Subnet 22)"
+    description: "Retrieves the full details (including user info, text, engagement counts) for one or more specific Twitter posts identified by their URLs."
     auth:
       type: header
       key: "Authorization"
@@ -199,6 +209,8 @@ endpoints:
   - path: /twitter/post
     externalPath: /twitter/post
     method: GET
+    summary: "Fetch details for a single Twitter tweet by ID (Subnet 22)"
+    description: "Retrieves the full details for a single Twitter post identified by its unique tweet ID."
     auth:
       type: header
       key: "Authorization"
@@ -211,6 +223,8 @@ endpoints:
   - path: /twitter/user/posts
     externalPath: /twitter/post/user
     method: GET
+    summary: "Fetch tweets posted by a specific Twitter user (Subnet 22)"
+    description: "Retrieves tweets posted by a specified Twitter username. Can optionally filter these tweets with a search query and limit the count."
     auth:
       type: header
       key: "Authorization"
@@ -233,6 +247,8 @@ endpoints:
   - path: /twitter/user/latest
     externalPath: /twitter/latest
     method: GET
+    summary: "Fetch the latest tweets posted by a specific Twitter user (Subnet 22)"
+    description: "Retrieves the most recent tweets posted by a specified Twitter username, up to a specified count."
     auth:
       type: header
       key: "Authorization"
@@ -251,6 +267,8 @@ endpoints:
   - path: /twitter/user/replies
     externalPath: /twitter/replies
     method: GET
+    summary: "Fetch replies made by a specific Twitter user (Subnet 22)"
+    description: "Retrieves tweets that are replies made by a specified Twitter username. Can optionally filter these replies with a search query and limit the count."
     auth:
       type: header
       key: "Authorization"
@@ -273,6 +291,8 @@ endpoints:
   - path: /twitter/post/replies
     externalPath: /twitter/replies/post
     method: GET
+    summary: "Fetch replies to a specific Twitter tweet (Subnet 22)"
+    description: "Retrieves replies made to a specific Twitter post, identified by its tweet ID. Can optionally filter these replies with a search query and limit the count."
     auth:
       type: header
       key: "Authorization"
@@ -295,6 +315,8 @@ endpoints:
   - path: /twitter/post/retweets
     externalPath: /twitter/retweets/post
     method: GET
+    summary: "Fetch retweets of a specific Twitter tweet (Subnet 22)"
+    description: "Retrieves users who have retweeted a specific Twitter post, identified by its tweet ID. Can optionally filter these retweets with a search query and limit the count."
     auth:
       type: header
       key: "Authorization"
@@ -317,6 +339,8 @@ endpoints:
   - path: /twitter/user
     externalPath: /twitter/user
     method: GET
+    summary: "Fetch profile information for a specific Twitter user (Subnet 22)"
+    description: "Retrieves the profile details (ID, name, description, follower counts, etc.) for a specified Twitter username."
     auth:
       type: header
       key: "Authorization"
@@ -329,6 +353,8 @@ endpoints:
   - path: /web
     externalPath: /web
     method: GET
+    summary: "Perform a standard web search (Subnet 22)"
+    description: "Conducts a web search for a given query string and returns a specified number of results. Supports pagination using 'start' and 'num' parameters."
     auth:
       type: header
       key: "Authorization"
