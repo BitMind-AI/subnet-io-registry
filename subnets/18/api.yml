@@ -1,4 +1,6 @@
 baseUrl: "http://185.17.198.226:22026"
+name: "Weather Prediction (Subnet 18)"
+description: "Provides weather forecasting and climate analysis capabilities through temperature predictions for specific locations and time ranges."
 endpoints:
   - path: /predict
     externalPath: /predictPointTemperature

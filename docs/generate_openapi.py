@@ -9,7 +9,7 @@ def generate_openapi(api_definitions_path, output_file):
     openapi = {
         "openapi": "3.0.0",
         "info": {
-            "title": "Bitmind API Oracle Docs",
+            "title": "Bitmind Intelligence Oracle",
             "version": "v1",
             "description": "Bitmind Oracle API Documentation.",
         },
