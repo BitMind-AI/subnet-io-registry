@@ -1,6 +1,6 @@
 # Subnet API Registry Documentation
 
-This directory (`docs`) contains the script [`generate_openapi.py`](generate_openapi.py) to generate the OpenAPI specification (`openapi.json`) for the Bitmind API Oracle Docs. It also provides instructions on how to serve the generated documentation using Swagger UI with Docker.
+This directory (`docs`) contains the script [`generate_openapi.py`](generate_openapi.py) to generate the OpenAPI specification (`openapi.json`) for the Bitmind Intelligence Oracle. It also provides instructions on how to serve the generated documentation using Swagger UI with Docker.
 
 ## Prerequisites
 
