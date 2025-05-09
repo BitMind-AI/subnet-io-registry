@@ -24,8 +24,9 @@ endpoints:
             properties:
               role:
                 type: string
-                enum: ["user", "assistant", "system"]
                 description: "Role of the message sender"
+                enum: ["user", "assistant", "system"]
+                default: "user"
               content:
                 type: string
                 description: "Message content"

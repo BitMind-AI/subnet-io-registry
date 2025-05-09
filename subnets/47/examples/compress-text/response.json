@@ -1,9 +1,0 @@
-{
-  "compressed": "perceptron utilized in machine learning is a supervised learning algorithm designed for binary classification. involves a function that categorizes a numerical input vector to determine its membership in a particular class. As a linear classifier it predicts based on a linear predictor function combines a feature vector with set of weights.",
-  "metadata": {
-    "original_tkn_count": 80,
-    "compressed_tkn_count": 62,
-    "credit_cost": 9.000000000000001e-7,
-    "condensed_pct": 22.5
-  }
-}

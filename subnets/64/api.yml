@@ -18,7 +18,7 @@ endpoints:
       properties:
         model:
           type: string
-          default: "deepseek-ai/DeepSeek-V3-0324"
+          description: "The model to use for chat completion."
           enum:
             [
               "deepseek-ai/DeepSeek-V3-0324",
@@ -42,7 +42,7 @@ endpoints:
               "ArliAI/QwQ-32B-ArliAI-RpR-v1",
               "chutesai/Llama-3.1-405B-FP8",
             ]
-          description: "The model to use for chat completion."
+          default: "deepseek-ai/DeepSeek-V3-0324"
         messages:
           type: array
           items:
@@ -50,7 +50,9 @@ endpoints:
             properties:
               role:
                 type: string
+                description: "Role of the message sender"
                 enum: [user, assistant, system]
+                default: "user"
               content:
                 type: string
             required: [role, content]
@@ -106,7 +108,7 @@ endpoints:
       properties:
         model:
           type: string
-          default: "deepseek-ai/DeepSeek-V3-0324"
+          description: "The model to use for completion."
           enum:
             [
               "deepseek-ai/DeepSeek-V3-0324",
@@ -130,7 +132,7 @@ endpoints:
               "ArliAI/QwQ-32B-ArliAI-RpR-v1",
               "chutesai/Llama-3.1-405B-FP8",
             ]
-          description: "The model to use for completion."
+          default: "deepseek-ai/DeepSeek-V3-0324"
         prompt:
           type: string
           description: "Text to generate completion for."
