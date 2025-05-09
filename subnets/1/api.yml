@@ -18,7 +18,7 @@ endpoints:
       properties:
         model:
           type: string
-          default: llama-3
+          description: "Model used for the chat"
           enum:
             [
               "llama-3",
@@ -30,7 +30,7 @@ endpoints:
               "Qwen/QwQ-32B",
               "qwen-2-5-7b",
             ]
-          description: "Model used for the chat"
+          default: "llama-3"
         messages:
           type: array
           items:
@@ -38,7 +38,9 @@ endpoints:
             properties:
               role:
                 type: string
+                description: "Role of the message sender"
                 enum: [user, assistant, system]
+                default: "user"
               content:
                 type: string
             required: [role, content]

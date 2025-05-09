@@ -33,20 +33,50 @@ def generate_openapi(api_definitions_path, output_file):
 
     # Helper function to add defaults to schema properties
     def add_defaults_to_schema(schema):
-        if schema and schema.get("properties"):
-            for prop_name, prop_details in schema["properties"].items():
-                if "default" in prop_details:
-                    continue  # Skip if already has a default
-                if "properties" in prop_details:
-                    add_defaults_to_schema(prop_details)
+        if not isinstance(schema, dict):
+            return schema
 
-                # Example of adding default to string if no example provided
-                if prop_details.get('type') == 'string' and 'example' not in prop_details and 'default' not in prop_details:
-                    prop_details['default'] = '' # or some other appropriate default
-                if prop_details.get('type') == 'integer' and 'example' not in prop_details and 'default' not in prop_details:
-                    prop_details['default'] = 0
-                if prop_details.get('type') == 'boolean' and 'example' not in prop_details and 'default' not in prop_details:
-                    prop_details['default'] = False
+        # Handle arrays
+        if schema.get("type") == "array" and "items" in schema:
+            schema["items"] = add_defaults_to_schema(schema["items"])
+            return schema
+
+        # Handle objects and their properties
+        if "properties" in schema:
+            for prop_name, prop_details in schema["properties"].items():
+                schema["properties"][prop_name] = add_defaults_to_schema(prop_details)
+
+        # Convert examples -> example
+        if "examples" in schema:
+            schema["example"] = schema["examples"][0]
+            del schema["examples"]
+
+        # Handle min/max values
+        if "exclusiveMinimum" in schema:
+            if not isinstance(schema["exclusiveMinimum"], bool):
+                print(f"Warning: exclusiveMinimum must be a boolean value in {schema}")
+                if "minimum" not in schema:
+                    schema["minimum"] = schema["exclusiveMinimum"]
+                del schema["exclusiveMinimum"]
+        if "exclusiveMaximum" in schema:
+            if not isinstance(schema["exclusiveMaximum"], bool):
+                print(f"Warning: exclusiveMaximum must be a boolean value in {schema}")
+                if "maximum" not in schema:
+                    schema["maximum"] = schema["exclusiveMaximum"]
+                del schema["exclusiveMaximum"]
+
+        # Add defaults for basic types if not present
+        if "type" in schema and "default" not in schema and "example" not in schema:
+            # Don't add defaults if there's an enum
+            if "enum" not in schema:
+                if schema["type"] == "string":
+                    schema["default"] = ""
+                elif schema["type"] == "integer":
+                    schema["default"] = 0
+                elif schema["type"] == "boolean":
+                    schema["default"] = False
+                elif schema["type"] == "number":
+                    schema["default"] = 0.0
 
         return schema
 
@@ -180,6 +210,20 @@ def generate_openapi(api_definitions_path, output_file):
                                         }
                                     } if request_body_schema else None
                                     
+                                    # Process schema properties
+                                    if request_body and request_body_schema and "properties" in request_body_schema:
+                                        for prop_name, prop_details in request_body_schema["properties"].items():
+                                            if "exclusiveMinimum" in prop_details:
+                                                if not isinstance(prop_details["exclusiveMinimum"], bool):
+                                                    if "minimum" not in prop_details:
+                                                        prop_details["minimum"] = prop_details["exclusiveMinimum"]
+                                                    del prop_details["exclusiveMinimum"]
+                                            if "exclusiveMaximum" in prop_details:
+                                                if not isinstance(prop_details["exclusiveMaximum"], bool):
+                                                    if "maximum" not in prop_details:
+                                                        prop_details["maximum"] = prop_details["exclusiveMaximum"]
+                                                    del prop_details["exclusiveMaximum"]
+                                    
                                     # Add example if available
                                     if request_example and request_body:
                                         request_body["content"][content_type]["example"] = request_example
@@ -212,17 +256,41 @@ def generate_openapi(api_definitions_path, output_file):
                                         
                                         # Set schema type based on param type
                                         param_type = param.get("type", "string")
-                                        param_obj["schema"] = {"type": param_type}
+                                        if param_type == "array":
+                                            param_obj["schema"] = {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": param.get("items", {}).get("type", "string")
+                                                }
+                                            }
+                                            # Copy any additional properties from items
+                                            if "items" in param and isinstance(param["items"], dict):
+                                                param_obj["schema"]["items"].update(param["items"])
+                                        else:
+                                            param_obj["schema"] = {"type": param_type}
                                         
                                         # Handle enum values
                                         if "enum" in param:
                                             param_obj["schema"]["enum"] = param["enum"]
+                                            # Use first enum value as default only if no default specified
+                                            if "default" not in param:
+                                                param_obj["schema"]["default"] = param["enum"][0]
                                         
                                         # Handle min/max values
                                         if "minimum" in param:
                                             param_obj["schema"]["minimum"] = param["minimum"]
                                         if "maximum" in param:
                                             param_obj["schema"]["maximum"] = param["maximum"]
+                                        if "exclusiveMinimum" in param:
+                                            if not isinstance(param["exclusiveMinimum"], bool):
+                                                print(f"Warning: exclusiveMinimum must be a boolean value in {param}")
+                                                continue
+                                            param_obj["schema"]["exclusiveMinimum"] = param["exclusiveMinimum"]
+                                        if "exclusiveMaximum" in param:
+                                            if not isinstance(param["exclusiveMaximum"], bool):
+                                                print(f"Warning: exclusiveMaximum must be a boolean value in {param}")
+                                                continue
+                                            param_obj["schema"]["exclusiveMaximum"] = param["exclusiveMaximum"]
                                         
                                         # Handle default values
                                         if "default" in param:

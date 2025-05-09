@@ -34,6 +34,7 @@ endpoints:
                 "twitter",
                 "arxiv",
               ]
+            default: "web"
         model:
           type: string
           description: "Model to use for scraping"
@@ -91,8 +92,10 @@ endpoints:
           description: "List of tools to search with"
           items:
             type: string
+            description: "Tool to use for searching"
             enum:
               ["web", "hackernews", "reddit", "wikipedia", "youtube", "arxiv"]
+            default: "web"
         model:
           type: string
           description: "Model to use for scraping"
@@ -141,6 +144,7 @@ endpoints:
         description: "Sort by Top or Latest"
         required: false
         enum: ["Top", "Latest"]
+        default: Top
       - name: user
         description: "User to search for"
         required: false
