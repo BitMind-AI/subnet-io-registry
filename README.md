@@ -22,6 +22,8 @@ To add a new subnet to the registry:
      - path: /endpoint-path # Used as the path for the BitMind Intelligence Oracle API endpoint
        externalPath: /external-path # Must match the public API endpoint
        method: POST # HTTP method (GET, POST, PUT, DELETE)
+       summary: "Summary of the endpoint"
+       description: "Description of the endpoint"
        auth:
          type: header
          key: "Authorization"
@@ -91,6 +93,8 @@ The `api.yml` files follow a standard format that includes:
   - `path`: The path for the BitMind Intelligence Oracle API endpoint
   - `externalPath`: The path for the public API endpoint
   - `method`: HTTP method
+  - `summary`: Summary of the endpoint
+  - `description`: Description of the endpoint
   - `auth`: Authentication requirements
   - `headers`: Required headers
   - `requestSchema`: JSON Schema for the request payload
