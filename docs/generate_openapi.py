@@ -116,6 +116,7 @@ def generate_openapi(api_definitions_path, output_file):
 
     # Collect paths first, then sort
     all_paths = {}
+    
     for root, _, files in os.walk(api_definitions_path):
         # Extract the subnet ID from the directory path.
         subnet_id = os.path.basename(root)
@@ -135,7 +136,7 @@ def generate_openapi(api_definitions_path, output_file):
                                 method = endpoint["method"].lower()
                                 
                                 # Handle path parameters in the path
-                                path_with_params = f"/{subnet_id}{endpoint_path}"
+                                path_with_params = endpoint_path if endpoint_path.startswith('/') else f"/{endpoint_path}"
                                 if endpoint.get("pathParams"):
                                     # If the endpoint has path parameters, modify the path to include them
                                     for param in endpoint.get("pathParams"):
@@ -143,9 +144,10 @@ def generate_openapi(api_definitions_path, output_file):
                                         # If the external path contains this parameter in {param} format
                                         if "{" + param_name + "}" in endpoint.get("externalPath", ""):
                                             # Add the parameter to the path
-                                            path_with_params = f"/{subnet_id}{endpoint_path}/{{{param_name}}}"
+                                            path_with_params = f"{path_with_params}/{{{param_name}}}"
                                 
-                                path = path_with_params
+                                # Make path unique by adding subnet ID as a prefix
+                                path = f"/{subnet_id}{path_with_params}"
                                 summary = endpoint.get("summary", f"{method.upper()} {path}")
                                 description = endpoint.get("description", "")
                                 request_body_schema = endpoint.get("requestSchema")
@@ -314,7 +316,9 @@ def generate_openapi(api_definitions_path, output_file):
                                 endpoint_obj = {
                                     "summary": summary,
                                     "description": description,
-                                    "responses": responses
+                                    "responses": responses,
+                                    "tags": [data.get('name', f'Subnet {subnet_id}')],  # Add subnet name as a tag
+                                    "operationId": f"{data.get('name', f'Subnet {subnet_id}')}_{endpoint_path.replace('/', '_')}"  # Add operationId for unique identification
                                 }
                                 
                                 # Add parameters if exist
@@ -333,19 +337,20 @@ def generate_openapi(api_definitions_path, output_file):
                                             if param["name"] in request_example:
                                                 param["example"] = request_example[param["name"]]
                                 
-                                all_paths[path, method] = endpoint_obj
+                                # Store the path with its subnet ID for sorting
+                                all_paths[(path, method, int(subnet_id))] = endpoint_obj
                 except yaml.YAMLError as e:
                     print(f"Error reading YAML file {file_path}: {e}")
 
     # Sort paths by subnet ID (numerically)
-    sorted_paths = sorted(all_paths.keys(), key=lambda x: int(x[0].split('/')[1]))
+    sorted_paths = sorted(all_paths.keys(), key=lambda x: x[2])  # Sort by subnet ID
 
     # Add the sorted paths to the openapi spec
-    for path_method in sorted_paths:
-        path, method = path_method
+    for path_method_id in sorted_paths:
+        path, method, _ = path_method_id
         if path not in openapi["paths"]:
             openapi["paths"][path] = {}
-        openapi["paths"][path][method] = all_paths[path_method]
+        openapi["paths"][path][method] = all_paths[path_method_id]
 
     return openapi
 

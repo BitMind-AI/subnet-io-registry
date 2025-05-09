@@ -5,7 +5,7 @@ endpoints:
   - path: /chat/completions
     externalPath: /chat/completions
     method: POST
-    summary: "Chat with high-performance AI models via Subnet 64"
+    summary: "Chat with high-performance AI models"
     description: "Engage in conversation using a wide range of high-performance language models (like DeepSeek, Qwen, Llama variants, etc.) available through Bittensor Subnet 64's serverless infrastructure. Suitable for complex Q&A, coding, and advanced text generation. See 'model' parameter for the extensive list of choices."
     auth:
       type: header
@@ -95,7 +95,7 @@ endpoints:
   - path: /completions
     externalPath: /completions
     method: POST
-    summary: "Generate text completions using high-performance models (Subnet 64)"
+    summary: "Generate text completions using high-performance models"
     description: "Completes a given text prompt using a wide range of high-performance language models (like DeepSeek, Qwen, Llama variants, etc.) available through Bittensor Subnet 64's serverless infrastructure. Ideal for demanding text generation tasks. See 'model' parameter for the extensive list of choices."
     auth:
       type: header
