@@ -58,7 +58,9 @@ To add a new subnet to the registry:
 
 5. Test your changes locally before submitting a PR
 
-6. Submit a pull request to the `staging` branch with your changes
+6. Validate your OpenAPI specification using the ReadMe.io validator (see [docs/README.md](docs/README.md) for detailed instructions)
+
+7. Submit a pull request to the `staging` branch with your changes
 
 ## Removing a Subnet
 
