@@ -1,4 +1,4 @@
-baseUrl: "https://staging-subnet-api.bitmindlabs.ai"
+baseUrl: "https://subnet-api.bitmindlabs.ai"
 name: "AI Detection (Subnet 34)"
 description: "Detect AI-generated content with high accuracy, providing confidence scores and detailed analysis predictions."
 endpoints:
