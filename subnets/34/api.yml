@@ -51,7 +51,7 @@ endpoints:
     externalPath: /detect-video
     method: POST
     summary: "Detect AI-generated videos"
-    description: "Analyzes a video to determine if it contains AI-generated content. The video can be provided either as a file upload or as a URL to an S3 presigned URL. Provides an overall prediction and frame-by-frame analysis results. Uses models from Bittensor Subnet 34."
+    description: "Analyzes up to 144 frames of a video file (uploaded via form-data or S3 presigned URL) to determine if it contains AI-generated content. Provides an overall prediction and frame-by-frame analysis results. Uses models from Bittensor Subnet 34."
     auth:
       type: header
       key: "Authorization"
