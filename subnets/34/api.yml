@@ -141,39 +141,40 @@ endpoints:
     headers:
       Content-Type: multipart/form-data
     requestSchema:
-      type: object
-      properties:
-        video:
-          type: file
-          description: >
-            Video file uploaded as form data.
-            - Supported formats: mp4, mov, avi.
-            - Either 'video' or 'videoUrl' must be provided, but not both.
-        videoUrl:
-          type: string
-          description: >
-            URL to a video file (typically an S3 presigned URL).
-            - Either 'video' or 'videoUrl' must be provided, but not both.
-            - The URL must be publicly accessible or have appropriate permissions.
-        startTime:
-          type: number
-          format: float
-          description: Starting point in seconds for extraction (default 0).
-        endTime:
-          type: number
-          format: float
-          description: Ending point in seconds for extraction (default entire video).
-        fps:
-          type: integer
-          description: Frames per second to use for processing (default 24).
-          default: 24
-        generateThumbnails:
-          type: boolean
-          description: Whether to generate thumbnail images (default false).
-          default: false
-      oneOf:
-        - required: ['video']
-        - required: ['videoUrl']
+      allOf:
+        - type: object
+          properties:
+            video:
+              type: file
+              description: >
+                Video file uploaded as form data.
+                - Supported formats: mp4, mov, avi.
+                - Either 'video' or 'videoUrl' must be provided, but not both.
+            videoUrl:
+              type: string
+              description: >
+                URL to a video file (typically an S3 presigned URL).
+                - Either 'video' or 'videoUrl' must be provided, but not both.
+                - The URL must be publicly accessible or have appropriate permissions.
+            startTime:
+              type: number
+              format: float
+              description: Starting point in seconds for extraction (default 0).
+            endTime:
+              type: number
+              format: float
+              description: Ending point in seconds for extraction (default entire video).
+            fps:
+              type: integer
+              description: Frames per second to use for processing (default 24).
+              default: 24
+            generateThumbnails:
+              type: boolean
+              description: Whether to generate thumbnail images (default false).
+              default: false
+        - oneOf:
+            - required: ['video']
+            - required: ['videoUrl']
     responseSchema:
       type: object
       properties:
