@@ -174,8 +174,17 @@ def generate_openapi(api_definitions_path, output_file):
                                     form_schema = {
                                         "type": "object",
                                         "properties": {},
-                                        "required": request_body_schema.get("required", [])
                                     }
+                                    
+                                    # Handle oneOf validation if it exists
+                                    if "oneOf" in request_body_schema:
+                                        # Create a new oneOf array with properly formatted required fields
+                                        form_schema["oneOf"] = []
+                                        for option in request_body_schema["oneOf"]:
+                                            if "required" in option and option["required"]:
+                                                form_schema["oneOf"].append({"required": option["required"]})
+                                    elif request_body_schema.get("required"):
+                                        form_schema["required"] = request_body_schema.get("required", [])
                                     
                                     for prop_name, prop_details in request_body_schema.get("properties", {}).items():
                                         if prop_details.get("type") == "file":
