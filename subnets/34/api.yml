@@ -204,37 +204,3 @@ endpoints:
               format: float
               description: Frames per second of the processed video.
           description: Video metadata information.
-
-  - path: /get-video-upload-url
-    externalPath: /get-video-upload-url
-    method: POST
-    summary: "Get presigned URL for uploading large video files"
-    description: "Returns a presigned S3 URL that can be used to upload a video file directly to S3, bypassing API payload limits. After uploading to S3, the returned videoUrl can be used with the detect-video or preprocess-video endpoints."
-    auth:
-      type: header
-      key: "Authorization"
-      value: "{{api-key}}"
-    headers:
-      Content-Type: application/json
-    requestSchema:
-      type: object
-      properties:
-        filename:
-          type: string
-          description: "The name of the file to upload (used to determine content type). Supported formats: mp4 (video/mp4), mov (video/quicktime), avi (video/x-msvideo), webm (video/webm). If extension is not recognized, defaults to video/mp4."
-        contentType:
-          type: string
-          description: "(Optional) The content type of the file, if known. If not provided, it will be inferred from the filename extension. Common types: video/mp4, video/quicktime, video/x-msvideo, video/webm."
-      required: ['filename']
-    responseSchema:
-      type: object
-      properties:
-        uploadUrl:
-          type: string
-          description: "The presigned URL to which the file should be uploaded with a PUT request (expires in 15 minutes)."
-        fileKey:
-          type: string
-          description: "The S3 key for the uploaded file (format: upload/timestamp-uuid-filename)."
-        videoUrl:
-          type: string
-          description: "The URL to use with the detect-video or preprocess-video endpoints after uploading (S3 bucket URL)."
