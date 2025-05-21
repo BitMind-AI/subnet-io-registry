@@ -64,7 +64,7 @@ endpoints:
         video:
           oneOf:
             - type: file
-            - type: string
+            - type: url
           description: >
             Video file uploaded as form data or accessible URL to a video file.
             - Supported formats: mp4, mov, avi.
@@ -137,7 +137,7 @@ endpoints:
         video:
           oneOf:
             - type: file
-            - type: string
+            - type: url
           description: >
             Video file uploaded as form data or accessible URL to a video file.
             - Supported formats: mp4, mov, avi.

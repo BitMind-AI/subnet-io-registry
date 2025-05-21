@@ -194,6 +194,12 @@ def generate_openapi(api_definitions_path, output_file):
                                                         "type": "string",
                                                         "format": "binary"
                                                     })
+                                                elif schema.get("type") == "url":
+                                                    new_one_of.append({
+                                                        "type": "string",
+                                                        "format": "uri",
+                                                        "pattern": "^https?://.+"
+                                                    })
                                                 else:
                                                     new_one_of.append(schema)
                                             form_schema["properties"][prop_name] = {
