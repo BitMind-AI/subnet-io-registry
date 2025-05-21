@@ -9,9 +9,9 @@ def generate_openapi(api_definitions_path, output_file):
     openapi = {
         "openapi": "3.0.0",
         "info": {
-            "title": "Bitmind Intelligence Oracle",
+            "title": "BitMind Intelligence Oracle",
             "version": "v1",
-            "description": "Bitmind Oracle API Documentation.",
+            "description": "BitMind Oracle API Documentation.",
         },
         "servers": [{"url": "https://api.bitmind.ai/oracle/v1"},
                     {"url": "https://staging-api.bitmind.ai/oracle/v1"},
@@ -183,6 +183,21 @@ def generate_openapi(api_definitions_path, output_file):
                                             form_schema["properties"][prop_name] = {
                                                 "type": "string",
                                                 "format": "binary",
+                                                "description": prop_details.get("description", "")
+                                            }
+                                        elif isinstance(prop_details, dict) and "oneOf" in prop_details:
+                                            # Handle oneOf schemas that might include file type
+                                            new_one_of = []
+                                            for schema in prop_details["oneOf"]:
+                                                if schema.get("type") == "file":
+                                                    new_one_of.append({
+                                                        "type": "string",
+                                                        "format": "binary"
+                                                    })
+                                                else:
+                                                    new_one_of.append(schema)
+                                            form_schema["properties"][prop_name] = {
+                                                "oneOf": new_one_of,
                                                 "description": prop_details.get("description", "")
                                             }
                                         else:
