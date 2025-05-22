@@ -9,9 +9,9 @@ def generate_openapi(api_definitions_path, output_file):
     openapi = {
         "openapi": "3.0.0",
         "info": {
-            "title": "Bitmind Intelligence Oracle",
+            "title": "BitMind Intelligence Oracle",
             "version": "v1",
-            "description": "Bitmind Oracle API Documentation.",
+            "description": "BitMind Oracle API Documentation.",
         },
         "servers": [{"url": "https://api.bitmind.ai/oracle/v1"},
                     {"url": "https://staging-api.bitmind.ai/oracle/v1"},
@@ -174,17 +174,8 @@ def generate_openapi(api_definitions_path, output_file):
                                     form_schema = {
                                         "type": "object",
                                         "properties": {},
+                                        "required": request_body_schema.get("required", [])
                                     }
-                                    
-                                    # Handle oneOf validation if it exists
-                                    if "oneOf" in request_body_schema:
-                                        # Create a new oneOf array with properly formatted required fields
-                                        form_schema["oneOf"] = []
-                                        for option in request_body_schema["oneOf"]:
-                                            if "required" in option and option["required"]:
-                                                form_schema["oneOf"].append({"required": option["required"]})
-                                    elif request_body_schema.get("required"):
-                                        form_schema["required"] = request_body_schema.get("required", [])
                                     
                                     for prop_name, prop_details in request_body_schema.get("properties", {}).items():
                                         if prop_details.get("type") == "file":
