@@ -51,7 +51,7 @@ endpoints:
     externalPath: /detect-video
     method: POST
     summary: "Detect AI-generated videos"
-    description: "Analyzes up to 144 frames of a video file (uploaded via form-data or provided as a URL) to determine if it contains AI-generated content. Provides an overall prediction and frame-by-frame analysis results. Uses models from Bittensor Subnet 34."
+    description: "Analyzes up to 144 frames of a video to determine if it contains AI-generated content. The video can be provided either as a file upload or URL. Provides an overall prediction and frame-by-frame analysis results. Uses models from Bittensor Subnet 34."
     auth:
       type: header
       key: "Authorization"
@@ -62,13 +62,9 @@ endpoints:
       type: object
       properties:
         video:
-          oneOf:
-            - type: file
-            - type: string
-              format: uri
-              pattern: '^https?://'
+          type: file
           description: >
-            Video file uploaded as form data or accessible URL to a video file.
+            Video file form data or direct URL.
             - Supported formats: mp4, mov, avi.
         startTime:
           type: number
@@ -126,7 +122,7 @@ endpoints:
     externalPath: /preprocess-video
     method: POST
     summary: "Prepare video file for detection"
-    description: "Processes and prepares a video for AI detection analysis. The video can be provided either as a file upload or as a URL. Converts the video to a browser-compatible format, extracts frames at specified intervals, and optionally generates thumbnail images. This endpoint is useful for pre-processing videos before sending them to the /detect-video endpoint."
+    description: "Processes and prepares a video for AI detection analysis. The video can be provided either as a file upload or URL. Converts the video to a browser-compatible format, extracts frames at specified intervals, and optionally generates thumbnail images. This endpoint is useful for pre-processing videos before sending them to the /detect-video endpoint."
     auth:
       type: header
       key: "Authorization"
@@ -137,13 +133,9 @@ endpoints:
       type: object
       properties:
         video:
-          oneOf:
-            - type: file
-            - type: string
-              format: uri
-              pattern: "^https?://.+"
+          type: file
           description: >
-            Video file uploaded as form data or accessible URL to a video file.
+            Video file form data or direct URL.
             - Supported formats: mp4, mov, avi.
         startTime:
           type: number
