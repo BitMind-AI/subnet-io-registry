@@ -1,4 +1,4 @@
-baseUrl: "https://apis.datura.ai"
+baseUrl: "https://api.desearch.ai"
 name: "Search (Subnet 22)"
 description: "Search across multiple data sources with AI-powered summarization."
 endpoints:
