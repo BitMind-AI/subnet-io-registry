@@ -1,0 +1,6 @@
+{
+  "query": "What are people saying about artificial intelligence and machine learning",
+  "keywords": ["AI", "ML", "technology"],
+  "keyword_operator": "or",
+  "max_results": 3
+}

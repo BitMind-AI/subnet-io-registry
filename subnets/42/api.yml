@@ -1,6 +1,6 @@
-baseUrl: "https://data.dev.masalabs.ai/api"
+baseUrl: "https://data.masa.ai/api"
 name: "Real-Time Data (Subnet 42)"
-description: "Access real-time data from X/Twitter."
+description: "Access real-time and indexed data from X/Twitter using live search and semantic similarity matching."
 endpoints:
   - path: /search
     externalPath: /v1/search/live/twitter
@@ -48,19 +48,40 @@ endpoints:
           required: [type, query] # Type and query required within arguments
       required: [type, arguments] # Top-level type and arguments object are required
 
-  - path: /status
-    externalPath: /v1/search/live/twitter/status/{jobUUID}
-    method: GET
-    summary: "Check the status of a Twitter search job"
-    description: "Retrieves the current status (e.g., pending, running, completed, failed) of an asynchronous Twitter search job initiated on Subnet 42, using the job's unique UUID."
+  - path: /search/similarity/twitter
+    externalPath: /v1/search/similarity/twitter
+    method: POST
+    summary: "Search Twitter with semantic similarity matching"
+    description: "Performs semantic vector-based search on indexed Twitter content. Matches tweets based on meaning and context rather than exact keywords."
     auth:
       type: header
       key: "Authorization"
       value: "Bearer {{api-key}}"
-    pathParams:
-      - name: jobUUID
-        description: "UUID of the search job"
-        required: true
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        query:
+          type: string
+          description: "Semantic search query text"
+        keywords:
+          type: array
+          description: "Optional filter keywords"
+          items:
+            type: string
+        keyword_operator:
+          type: string
+          description: "Keyword filter operator"
+          enum: ["and", "or"]
+          default: "and"
+        max_results:
+          type: integer
+          description: "Maximum number of results to return"
+          default: 10
+          minimum: 1
+          maximum: 100
+      required: ["query"]
 
   - path: /result
     externalPath: /v1/search/live/twitter/result/{jobUUID}
