@@ -42,7 +42,7 @@ endpoints:
               "ArliAI/QwQ-32B-ArliAI-RpR-v1",
               "chutesai/Llama-3.1-405B-FP8",
             ]
-          default: "deepseek-ai/DeepSeek-V3-0324"
+          default: "chutesai/Mistral-Small-3.1-24B-Instruct-2503"
         messages:
           type: array
           items:
@@ -132,7 +132,7 @@ endpoints:
               "ArliAI/QwQ-32B-ArliAI-RpR-v1",
               "chutesai/Llama-3.1-405B-FP8",
             ]
-          default: "deepseek-ai/DeepSeek-V3-0324"
+          default: "chutesai/Mistral-Small-3.1-24B-Instruct-2503"
         prompt:
           type: string
           description: "Text to generate completion for."
