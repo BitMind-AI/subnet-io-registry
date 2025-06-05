@@ -2,7 +2,7 @@
   "type": "twitter-scraper",
   "arguments": {
     "type": "searchbyquery",
-    "query": "AI trending",
-    "max_results": 10
+    "query": "bitcoin",
+    "max_results": 5
   }
 }
