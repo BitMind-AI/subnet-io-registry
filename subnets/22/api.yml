@@ -54,7 +54,7 @@ endpoints:
               "PAST_YEAR",
               "PAST_2_YEARS",
             ]
-          default: "PAST_WEEK"
+          default: "PAST_24_HOURS"
         streaming:
           type: boolean
           description: "Whether to stream results"
@@ -68,7 +68,7 @@ endpoints:
         system_message:
           type: string
           description: "Custom system message to be used for the search"
-      required: ["prompt", "tools", "model", "date_filter", "streaming"]
+      required: ["prompt", "tools", "model"]
 
   - path: /search/links/web
     externalPath: /desearch/ai/search/links/web
@@ -378,7 +378,12 @@ endpoints:
             type: string
             enum: ["web", "hackernews", "reddit", "wikipedia", "youtube", "twitter", "arxiv"]
             default: "web"
-      required: ["prompt"]
+        model:
+          type: string
+          description: "Model to use for research"
+          enum: ["NOVA", "ORBIT", "HORIZON"]
+          default: "NOVA"
+      required: ["prompt", "tools", "model"]
 
   - path: /web
     externalPath: /web
@@ -395,11 +400,13 @@ endpoints:
         required: true
       - name: num
         description: "Count of results to get"
-        required: true
+        required: false
         type: integer
+        default: 10
       - name: start
         description: "How many results to skip (used for pagination with num)"
-        required: true
+        required: false
         type: integer
-        minimum: 1
+        default: 1
+        minimum: 0
         maximum: 100
