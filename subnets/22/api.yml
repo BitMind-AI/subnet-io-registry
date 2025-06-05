@@ -354,6 +354,32 @@ endpoints:
         description: "User to search for"
         required: true
 
+  - path: /deep/search
+    externalPath: /desearch/deep/search
+    method: POST
+    summary: "Perform in-depth AI research"
+    description: "Performs in-depth AI research gathering information from various sources with comprehensive analysis."
+    auth:
+      type: header
+      key: "Authorization"
+      value: "{{api-key}}"
+    headers:
+      Content-Type: application/json
+    requestSchema:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: "Research query text"
+        tools:
+          type: array
+          description: "List of research tools to use"
+          items:
+            type: string
+            enum: ["web", "hackernews", "reddit", "wikipedia", "youtube", "twitter", "arxiv"]
+            default: "web"
+      required: ["prompt"]
+
   - path: /web
     externalPath: /web
     method: GET
