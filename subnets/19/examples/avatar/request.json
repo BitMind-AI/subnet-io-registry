@@ -1,11 +1,11 @@
 {
-  "prompt": "Make his hat blue",
+  "prompt": "Make his hat green",
   "steps": 10,
   "cfg_scale": 3,
-  "height": 1024,
-  "width": 1024,
+  "height": 1280,
+  "width": 1280,
   "negative_prompt": "",
   "ipadapter_strength": 0.5,
   "control_strength": 0.5,
-  "init_image": "https://lastfm.freetls.fastly.net/i/u/770x0/443c5e1c35fd38bb5a49a7d00612dab3.jpg#443c5e1c35fd38bb5a49a7d00612dab3"
+  "init_image": "https://i.ibb.co/20B2j7R1/penguin-blue-hat-1280-1280.jpg"
 }

@@ -288,18 +288,14 @@ endpoints:
           description: "CFG scale for avatar generation"
         width:
           type: integer
-          minimum: 512
-          maximum: 2048
-          exclusiveMaximum: true
-          default: 1024
-          description: "Width for avatar generation"
+          enum: [1280]
+          default: 1280
+          description: "Width for avatar generation (only 1280 supported)"
         height:
           type: integer
-          minimum: 512
-          maximum: 2048
-          exclusiveMaximum: true
-          default: 1024
-          description: "Height for avatar generation"
+          enum: [1280]
+          default: 1280
+          description: "Height for avatar generation (only 1280 supported)"
         ipadapter_strength:
           type: number
           minimum: 0.1

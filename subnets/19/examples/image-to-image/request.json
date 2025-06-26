@@ -1,5 +1,5 @@
 {
-  "prompt": "Make his hat blue",
+  "prompt": "Put a blue hat on his head",
   "model": "dataautogpt3/ProteusV0.4-Lightning",
   "steps": 10,
   "cfg_scale": 3,
@@ -7,5 +7,5 @@
   "width": 1024,
   "negative_prompt": "",
   "image_strength": 0.5,
-  "init_image": "https://lastfm.freetls.fastly.net/i/u/770x0/443c5e1c35fd38bb5a49a7d00612dab3.jpg#443c5e1c35fd38bb5a49a7d00612dab3"
+  "init_image": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Icon_Pinguin_1_512x512.png"
 }
