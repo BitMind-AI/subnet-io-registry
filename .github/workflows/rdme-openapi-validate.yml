@@ -35,4 +35,4 @@ jobs:
       - name: Run `openapi:validate` command 🚀
         uses: readmeio/rdme@v10
         with:
-          rdme: openapi upload docs/openapi.json --key=${{ secrets.README_API_KEY }}
+          rdme: openapi upload docs/openapi.json --version=v2 --key=${{ secrets.README_API_KEY }}
