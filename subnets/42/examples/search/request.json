@@ -1,8 +1,0 @@
-{
-  "type": "twitter-scraper",
-  "arguments": {
-    "type": "searchbyquery",
-    "query": "bitcoin",
-    "max_results": 5
-  }
-}

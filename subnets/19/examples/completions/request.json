@@ -1,8 +1,0 @@
-{
-  "prompt": "The most loved programming language is",
-  "model": "unsloth/Llama-3.2-3B-Instruct",
-  "temperature": 0.5,
-  "max_tokens": 50,
-  "top_p": 0.5,
-  "stream": false
-}

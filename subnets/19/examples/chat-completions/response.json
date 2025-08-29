@@ -1,1 +1,0 @@
-{"choices":[{"index":0,"finish_reason":"stop","message":{"content":"The capital of France is Paris.","role":"assistant"}}],"usage":{"prompt_tokens":7,"completion_tokens":8,"total_tokens":15}}
